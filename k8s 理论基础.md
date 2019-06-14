@@ -35,4 +35,4 @@ __node 组件__
 * kube-proxy    -   负责为pod对象提供代理
 * docker
 * flannel 容器间通信
-* etcd  k8s通信
+* etcd  为群集提供存储服务

@@ -34,9 +34,10 @@ systemctl start etcd
 __检查群集状态__
 
 等到 master 和 node 都正确部署完 etcd 可检查群集健康状态
-```
-/opt/kubernetes/bin/etcdctl \
---ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
---endpoints="https://192.168.10.110:2379,https://192.168.10.141:2379,https://192.168.10.145:2379" \
-cluster-health
-```
+* 进入 /opt/kubernetes/ssl/ 执行以下命令
+    ```
+    /opt/kubernetes/bin/etcdctl \
+    --ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
+    --endpoints="https://192.168.10.110:2379,https://192.168.10.141:2379,https://192.168.10.145:2379" \
+    cluster-health
+    ```
