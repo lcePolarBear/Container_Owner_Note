@@ -5,10 +5,10 @@ Before=docker.service
 
 [Service]
 Type=notify
-EnvironmentFile=/opt/kubernetes/cfg/Flanneld
-ExecStart=/opt/kubernetes/bin/Flanneld --ip-masq $FLANNEL_OPTIONS
+EnvironmentFile=/opt/kubernetes/cfg/flanneld
+ExecStart=/opt/kubernetes/bin/flanneld --ip-masq $FLANNEL_OPTIONS
 ExecStartPost=/opt/kubernetes/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTION -d /run/flannel/subnet.env
 Restart=on-failure
 
 [Install]
-wantedBy=multi-user.target
+WantedBy=multi-user.target
