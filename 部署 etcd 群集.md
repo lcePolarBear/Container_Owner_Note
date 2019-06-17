@@ -30,6 +30,10 @@ __启动 etcd__
 ```
 systemctl start etcd
 ```
+* 重定向 systemd 配置文件
+    ```
+    systemctl daemon-reload
+    ```
 
 __检查群集状态__
 
