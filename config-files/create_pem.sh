@@ -18,7 +18,6 @@ cat > ca-config.json <<EOF
     }
 }
 EOF
-
 cat > ca-csr.json <<EOF
 {
     "CN": "kubernetes",
@@ -37,9 +36,7 @@ cat > ca-csr.json <<EOF
     ]
 }
 EOF
-
 cfssl gencert -initca ca-csr.json | cfssljson -bare -bare ca -
-
 cat > server-csr.json <<EOF
 {
     "CN": "kubernetes",
@@ -70,7 +67,6 @@ cat > server-csr.json <<EOF
     ]
 }
 EOF
-
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | cfssljson -bare server
 #--------------------------------
 cat > admin-csr.json <<EOF
@@ -92,7 +88,6 @@ cat > admin-csr.json <<EOF
     ]
 }
 EOF
-
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes admin-csr.json | cfssljson -bare admin
 #-------------------------------------
 cat > kube-proxy-csr.json <<EOF
@@ -114,5 +109,4 @@ cat > kube-proxy-csr.json <<EOF
     ]
 }
 EOF
-
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kube-proxy-csr.json | cfssljson -bare kube-proxy
