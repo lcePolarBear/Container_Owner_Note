@@ -22,7 +22,7 @@ __创建一个变量 指定 k8s https 访问入口__
 export KUBE_APISERVER="https://192.168.10.110:6443"
 ```
 
-__在 /opt/kubernetes/ssl 路径下使用 [kuberctl](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/kubernetes-client-linux-amd64.tar.gz) 工具，引用上面的变量将 kuber 证书写入 kubeconfig__
+__在 /opt/kubernetes/ssl 路径下使用 [kubectl](https://github.com/kubernetes/kubernetes/releases) 工具，引用上面的变量将 kuber 证书写入 kubeconfig__
 ```
 /opt/kubernetes/bin/kubectl config set-cluster kubernetes \
 --certificate-authority=./ca.pem \
@@ -70,3 +70,5 @@ __创建 kube-proxy kubeconfig文件__
 
 /opt/kubernetes/bin/kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 ```
+
+__生成的 bootstrap.kubeconfig 和 kube-proxy.kubeconfig 之后会用到__
