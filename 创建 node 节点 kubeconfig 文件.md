@@ -22,7 +22,7 @@ __创建一个变量 指定 k8s https 访问入口__
 export KUBE_APISERVER="https://192.168.10.110:6443"
 ```
 
-__在 /opt/kubernetes/ssl 路径下使用 [kubectl](https://github.com/kubernetes/kubernetes/releases) 工具，引用上面的变量将 kuber 证书写入 kubeconfig__
+__在 /opt/kubernetes/ssl 路径下使用 [kubernetes-client](https://github.com/kubernetes/kubernetes/releases) 中的 kubectl 工具，引用上面的变量将证书写入 kubeconfig__
 ```
 /opt/kubernetes/bin/kubectl config set-cluster kubernetes \
 --certificate-authority=./ca.pem \
