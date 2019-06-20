@@ -13,7 +13,7 @@ EOF
     ```
     d9a82c881567307c015b9ebbf1fc7067,kubelet-bootstrap,10001,"system:kubelet-bootstrap"
     ```
-    > token 是一个访问权限的认证 kubelet-bootstrap为用户名 system:kubelet-bootstrap是分组 
+    > token 是一个访问权限的认证 kubelet-bootstrap 为用户名 system:kubelet-bootstrap 是分组 
     
 - 作用是让 node 节点使用 token 值使用此用户权限和用户组权限去访问 k8s 集群
 
@@ -22,7 +22,7 @@ __创建一个变量 指定 k8s https 访问入口__
 export KUBE_APISERVER="https://192.168.10.110:6443"
 ```
 
-__在 /opt/kubernetes/ssl 路径下使用 [kubernetes-client](https://github.com/kubernetes/kubernetes/releases) 中的 kubectl 工具，引用上面的变量将证书写入 kubeconfig__
+__在 /opt/kubernetes/ssl 路径下使用 [kubernetes-client](https://github.com/kubernetes/kubernetes/releases) 中的 kubectl 工具，引用上面的变量将证书写入 bootstrap.kubeconfig__
 ```
 /opt/kubernetes/bin/kubectl config set-cluster kubernetes \
 --certificate-authority=./ca.pem \
@@ -49,7 +49,7 @@ __设置默认上下文__
 ```
 > 这个 bootstrap 是 kubelet 生成证书用的
 
-__创建 kube-proxy kubeconfig文件__
+__创建 kube-proxy.kubeconfig 文件__
 ```
 /opt/kubernetes/bin/kubectl config set-cluster kubernetes \
 --certificate-authority=./ca.pem \
