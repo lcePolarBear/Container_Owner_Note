@@ -18,7 +18,7 @@ KUBE_ALLOW_PRIV="--allow-privileged=true"
 KUBELET__DNS_IP="--cluster-dns=${DNS_SERVER_IP}"
 KUBELET_DNS_DOMAIN="--cluster-domain=${DNS_DOMAIN}"
 KUBELET_SWAP="--fail-swap-on=false"
-KUBELET_POD="--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google-comtainers/pause-amd64:3.0"
+KUBELET_POD="--pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0"
 KUBELET_ARGS=""
 EOF
 
