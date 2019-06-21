@@ -31,13 +31,13 @@ vi /opt/kubernetes/cfg/[flanneld](https://github.com/lcePolarBear/Kubernetes_Bas
 >两个 node 节点的网段不一样是正常的 但 docker 必须跟 node 结点下的 flannel 同一网段
 只要 node 节点之间相互能 ping 通 docker 的 ip 地址就说明正常了
 
-- 我们可以通过以下命令来查看flannel维护的路由信息
+- 我们可以在 /opt/kubernetes/ssl/ 路径下通过以下命令来查看 flannel 维护的路由信息
     ```
     /opt/kubernetes/bin/etcdctl \
     --ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
     --endpoints="https://192.168.10.110:2379,https://192.168.10.141:2379,https://192.168.10.145:2379" \
     ls /coreos.com/network/subnets
     ```
-    结果正好是两个node节点分配的网段
+    结果正好是两个 node 节点分配的网段
 
     可以将ls替换成get来查看这些网段文件里的信息，其中主要可以看到节点的 ip 地址
