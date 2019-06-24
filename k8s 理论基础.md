@@ -12,8 +12,8 @@ __功能列表__
 * 资源监控
 * 认证 rbac
 
-__组成部分__
-* Pod -   k8s 最基本的操作单元 代表群集中一个进程 内部封装单、多个容器
+__基本对象__
+* Pod -   k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
 * Service -   可以看作一组提供相同服务的 Pod 对外访问接口
 * volume 
 * namespace 
@@ -25,14 +25,16 @@ __组成部分__
 * Job 定时执行、一次执行任务
 
 __master 组件__
-* kube-apiserver    -    对外接口供客户端调用
-* kube-controller-manager   -    管理控制器
-* kube-scheduler    -    对集群内部的资源进行调度
+* kube-apiserver    -    集群的统一入口 对所有资源的操作都交给他在提交给 etcd
+* kube-controller-manager   -    集中处理集群中常规后台任务
+* kube-scheduler    -    为新创建的 pod 分配 node
 
 __node 组件__
-* Pod
-* kubelet   -   负责监视指派到 node 上的 pod 增删查改啥的
-* kube-proxy    -   负责为pod对象提供代理
-* docker
+* kubelet   -   Master 在 Node 节点上的 Agent 管理本机运行容器的生命周期 将每个 pod 转换成容器
+* kube-proxy    -   负责为 pod 提供网络代理
+* docker    -   运行容器
+
+__第三方服务__
 * flannel   -   容器间通信
-* etcd  -   为群集提供存储服务
+* etcd  -   分布式存储系统
+    - etcd 要求同一部署的机器数要达到三台及以上
