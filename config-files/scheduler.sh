@@ -1,21 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-MASTER_ADDRESS=${1:-"127.0.0.1"}
+MASTER_ADDRESS=$1
 
 cat <<EOF >/opt/kubernetes/cfg/kube-scheduler
-KUBE_LOGTOSTDERR="--logtostderr=true"
-KUBE_LOG_LEVEL="--v=4"
-KUBE_MASTER="--master=${MASTER_ADDRESS}:8080"
-KUBE_LEADER_ELECT="--leader-elect"
-KUBE_SCHEDULER_ARGS=""
+
+KUBE_SCHEDULER_OPTS="--logtostderr=true \\
+--v=4 \\
+--master=${MASTER_ADDRESS}:8080 \\
+--leader-elect"
 
 EOF
-
-KUBE_SCHEDULER_OPTS="   \${KUBE_LOGTOSTDERR}     \\
-                        \${KUBE_LOG_LEVEL}       \\
-                        \${KUBE_MASTER}          \\
-                        \${KUBE_LEADER_ELECT}    \\
-                        \$KUBE_SCHEDULER_ARGS"
 
 cat <<EOF >/usr/lib/systemd/system/kube-scheduler.service
 [Unit]
@@ -24,7 +18,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 EnvironmentFile=-/opt/kubernetes/cfg/kube-scheduler
-ExecStart=/opt/kubernetes/bin/kube-scheduler ${KUBE_SCHEDULER_OPTS}
+ExecStart=/opt/kubernetes/bin/kube-scheduler \$KUBE_SCHEDULER_OPTS
 Restart=on-failure
 
 [Install]
