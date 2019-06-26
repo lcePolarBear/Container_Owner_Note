@@ -2,6 +2,12 @@
 
 > kuberconfig 用于 node 节点上 kube-proxy 和 kubelet 与集群进行通信做的认证
 
+__准备工作__
+
+- 下载并解压 [kubernetes-server](https://github.com/kubernetes/kubernetes/releases)
+
+- 将 /root/kubernetes/server/bin/kubectl 放入 /usr/bin 下可以直接启动 kubectl
+
 __创建 TLS Bootstrapping Token ，让 k8s 集群自动为 kubelet 颁发数字证书__
 ```
 export BOOTSTRAP_TOKEN=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
@@ -18,57 +24,58 @@ EOF
 - 作用是让 node 节点使用 token 值使用此用户权限和用户组权限去访问 k8s 集群
 
 __创建一个变量 指定 k8s https 访问入口__
-```
-export KUBE_APISERVER="https://192.168.10.110:6443"
-```
+  ```
+  export KUBE_APISERVER="https://192.168.10.110:6443"
+  ```
+  - 注意一定要保证 BOOTSTRAP_TOKEN 变量依然存在在系统变量中
 
-__在 /opt/kubernetes/ssl 路径下使用 [kubernetes-client](https://github.com/kubernetes/kubernetes/releases) 中的 kubectl 工具，引用上面的变量将证书写入 bootstrap.kubeconfig__
+__引用上面的集群参数变量写入 bootstrap.kubeconfig__
 ```
-/opt/kubernetes/bin/kubectl config set-cluster kubernetes \
---certificate-authority=./ca.pem \
---embed-certs=true \
---server=${KUBE_APISERVER} \
---kubeconfig=bootstrap.kubeconfig
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=bootstrap.kubeconfig
 ```
 __设置客户端认证参数 即设置证书信息__
 ```
-/opt/kubernetes/bin/kubectl config set-credentials kubelet-bootstrap \
---token=${BOOTSTRAP_TOKEN} \
---kubeconfig=bootstrap.kubeconfig
+kubectl config set-credentials kubelet-bootstrap \
+  --token=${BOOTSTRAP_TOKEN} \
+  --kubeconfig=bootstrap.kubeconfig
 ```
 __设置上下文参数__
 ```
-/opt/kubernetes/bin/kubectl config set-context default \
---cluster=kubernetes \
---user=kubelet-bootstrap \
---kubeconfig=bootstrap.kubeconfig
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kubelet-bootstrap \
+  --kubeconfig=bootstrap.kubeconfig
 ```
 __设置默认上下文__
 ```
-/opt/kubernetes/bin/kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
+kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
 ```
 > 这个 bootstrap 是 kubelet 生成证书用的
 
 __创建 kube-proxy.kubeconfig 文件__
 ```
-/opt/kubernetes/bin/kubectl config set-cluster kubernetes \
---certificate-authority=./ca.pem \
---embed-certs=true \
---server=${KUBE_APISERVER} \
---kubeconfig=proxy.kubeconfig
+kubectl config set-cluster kubernetes \
+  --certificate-authority=/opt/kubernetes/ssl/ca.pem \
+  --embed-certs=true \
+  --server=${KUBE_APISERVER} \
+  --kubeconfig=kube-proxy.kubeconfig
 
-/opt/kubernetes/bin/kubectl config set-credentials kube-proxy \
---client-certificate=./kube-proxy.pem \
---client-key=./kube-proxy-key.pem \
---embed-certs=true \
---kubeconfig=kube-proxy.kubeconfig
+kubectl config set-credentials kube-proxy \
+  --client-certificate=/opt/kubernetes/ssl/kube-proxy.pem \
+  --client-key=/opt/kubernetes/ssl/kube-proxy-key.pem \
+  --embed-certs=true \
+  --kubeconfig=kube-proxy.kubeconfig
 
-/opt/kubernetes/bin/kubectl config set-context default \
---cluster=kubernetes \
---user=kube-proxy \
---kubeconfig=kube-proxy.kubeconfig
+kubectl config set-context default \
+  --cluster=kubernetes \
+  --user=kube-proxy \
+  --kubeconfig=kube-proxy.kubeconfig
 
-/opt/kubernetes/bin/kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
+kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
 ```
 
 __生成的 bootstrap.kubeconfig 和 kube-proxy.kubeconfig 之后会用到__
