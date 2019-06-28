@@ -75,7 +75,7 @@ __手动部署 etcd__
         systemctl start etcd
         ```
     - 注意第一次启动会卡壳，强制退出就可以
-    - 在所有节点均启动之前用 systemctl status 查看启动状态是不成功的，但只要用 ps -ef | grep etcd 有进程启动就可以
+    - 在所有节点均启动之前用 systemctl status 查看启动状态是不成功的，但只要用 ```ps -ef | grep etcd``` 有进程启动就可以
 * 启动出现失败情况的查错方式
     ```
     journalctl -u etcd

@@ -1,5 +1,10 @@
 ## 部署 Node 节点组件
 
+__准备工作__
+- 直接使用 [kubeconfig.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/kubeconfig.sh) 脚本生成 bootstrap.kubeconfig 和 kube-proxy.kubeconfig
+```
+./kubeconfig.sh 192.168.10.110 /opt/kubernetes/ssl/
+```
 __将 kubelet 和 kube-proxy 放入 /opt/kubernetes/bin 下__
 
     - 
