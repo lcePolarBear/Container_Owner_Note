@@ -91,7 +91,7 @@ __检查群集状态__
 * 进入 /opt/etcd/ssl/ 执行以下命令
     ```
     /opt/etcd/bin/etcdctl \
-    --ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
+    --ca-file=/opt/etcd/ssl/ca.pem --cert-file=/opt/etcd/ssl/server.pem --key-file=/opt/etcd/ssl/server-key.pem \
     --endpoints="https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379" \
     cluster-health
     ```

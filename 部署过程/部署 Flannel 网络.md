@@ -9,9 +9,9 @@ __在 master 下__
 写入分配的子网段到 etcd 供 flanneld 使用，在 /opt/etcd/ssl 下执行
 ```
 /opt/etcd/bin/etcdctl \
---ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
+--ca-file=/opt/etcd/ssl/ca.pem --cert-file=/opt/etcd/ssl/server.pem --key-file=/opt/etcd/ssl/server-key.pem \
 --endpoints="https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379" \
-set /coreos.com/network/config '{"Network":"172.17.0.0/16","Backend":{"Type":"vxlan"}}'
+set /coreos.com/network/config  '{ "Network": "172.17.0.0/16", "Backend": {"Type": "vxlan"}}'
 ```
 可将 set 改为 get 来查验是否配置成功
 
@@ -19,16 +19,14 @@ __在 node 下__
 
 - 下载 [flanneld](https://github.com/coreos/flannel/releases/) 并将其中的 mk-docker-opts 和 flanneld 放入到 /opt/kubernetes/bin 路径下
 
-- 创建 flanneld 配置文件
-    
-    vi /opt/kubernetes/cfg/flanneld
+- 创建 flanneld 配置文件 /opt/kubernetes/cfg/flanneld
     ```
     FLANNEL_OPTIONS="--etcd-endpoints=https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379 \
     -etcd-cafile=/opt/etcd/ssl/ca.pem \
     -etcd-certfile=/opt/etcd/ssl/server.pem \
     -etcd-keyfile=/opt/etcd/ssl/server-key.pem"
     ```
-- 再写一个服务去管理 vi /usr/lib/systemd/system/flanneld.service
+- /usr/lib/systemd/system/flanneld.service
     ```
     [Unit]
     Description=Flanneld overlay address etcd agent
@@ -57,7 +55,7 @@ __在 node 下__
 __自动化脚本 [flannel.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/flannel.sh) 执行 flannel 部署__
 
     ```
-    ./flannel.sh
+    ./flannel.sh https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379
     ```
 __查验连接状态__
 >两个 node 节点的网段不一样是正常的 但 docker 必须跟 node 结点下的 flannel 同一网段
@@ -66,9 +64,10 @@ __查验连接状态__
 - 我们可以在 /opt/etcd/ssl/ 路径下通过以下命令来查看 flannel 维护的路由信息
     ```
     /opt/etcd/bin/etcdctl \
-    --ca-file=ca.pem --cert-file=server.pem --key-file=server-key.pem \
-    --endpoints="https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379" \
-    ls /coreos.com/network/subnets
+    --ca-file=/opt/etcd/ssl/ca.pem \
+    --cert-file=/opt/etcd/ssl/server.pem \
+    --key-file=/opt/etcd/ssl/server-key.pem \
+    --endpoints="https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379" ls /coreos.com/network/subnets
     ```
     结果正好是两个 node 节点分配的网段
 

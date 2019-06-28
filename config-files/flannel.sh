@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ETCD_ENDPOINTS=${1:-"https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379"}
+ETCD_ENDPOINTS=${1:-"http://127.0.0.1:2379"}
 
 cat <<EOF >/opt/kubernetes/cfg/flanneld
 
@@ -34,32 +34,23 @@ cat <<EOF >/usr/lib/systemd/system/docker.service
 [Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
-BindsTo=containerd.service
-After=network-online.target firewalld.service containerd.service
+After=network-online.target firewalld.service
 Wants=network-online.target
-Requires=docker.socket
 
 [Service]
+Type=notify
 EnvironmentFile=/run/flannel/subnet.env
 ExecStart=/usr/bin/dockerd \$DOCKER_NETWORK_OPTIONS
-ExecReload=/bin/kill -s HUP $MAINPID
-TimeoutSec=0
-RestartSec=2
-Restart=always
-
-StartLimitBurst=3
-
-StartLimitInterval=60s
-
+ExecReload=/bin/kill -s HUP \$MAINPID
 LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitCORE=infinity
-
-TasksMax=infinity
-
+TimeoutStartSec=0
 Delegate=yes
-
 KillMode=process
+Restart=on-failure
+StartLimitBurst=3
+StartLimitInterval=60s
 
 [Install]
 WantedBy=multi-user.target
@@ -70,3 +61,4 @@ systemctl daemon-reload
 systemctl enable flanneld
 systemctl restart flanneld
 systemctl restart docker
+
