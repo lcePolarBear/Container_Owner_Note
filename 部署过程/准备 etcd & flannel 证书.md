@@ -1,16 +1,13 @@
-## 准备证书
+## 准备 etcd & flannel 证书
 
-__各组件所需证书__
+__etcd & flannel 所需证书__
 ```
-etcd & flannel  ca.pem | server.pem | server-key.pem
-kube-apiserver  ca.pem | server.pem | server-key.pem
-kubelet         kube-apiserver 分发
-kube-proxy      ca.pem | kube-proxy.pem | kube-proxy-key.pem
-kubectl         ca.pem | admin.pem | admin-key.pem
+ca.pem | ca-key.pem | server.pem | server-key.pem
 ```
-__部署证书生成工具 cfssl__
 
-* 用 openssl 来完成 ssl 的认证非常麻烦 我们用 cfssl 来完成
+__安装证书生成工具 cfssl__
+
+* 用 openssl 来完成 ssl 的认证非常麻烦，所以我们用 cfssl 来完成
 
 * 获取 cfssl
     ```
@@ -105,11 +102,3 @@ __生成 etcd 所需证书__
     ```
 * 自动化脚本 [etcd-cert.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/etcd-cert.sh) 生成以上 pem 私钥文件
     - 注意要修改其中的群集节点 ip 地址！
-
-__生成 Kubernetes 所需证书__
-
-- 从 etcd 了解了证书结构之后我们直接用 [k8s-cert.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/k8s-cert.sh
-) 脚本文件生成所需证书
-    - 注意 server-csr.json 下的 hosts 不包含 node 节点的 ip
-
-- 将生成的 pem 证书放入 /opt/kunernetes/ssl 下
