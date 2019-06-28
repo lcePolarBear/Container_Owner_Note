@@ -27,10 +27,13 @@ __通过 shell 脚本创建服务与配置文件__
 __确保 etcd 正常的情况下可以检查群集是否正常__
 ```
 kubectl get cs
+<<<<<<< HEAD
 ```
 
 __将 kubelet-bootstrap 用户绑定到系统群集角色__
 >node 节点上的 kubelet-bootstrap 并没有权限创建证书。所以要创建这个用户的权限并绑定到这个角色上 
 ```
 kubectl create clusterrolebinding kubelet-bootstrap --clusterrole=system:nodebootstrapper --user=kubelet-bootstrap
+=======
+>>>>>>> aedb5fc649cf7b84a37c94e4b1d12406bc910606
 ```
