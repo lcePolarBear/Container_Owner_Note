@@ -7,6 +7,14 @@ __前期准备__
     mkdir -p /opt/etcd/{bin,cfg,ssl}
     ```
 
+__获取证书__
+- etcd 的运行需要 ssl 证书的认证
+    ```
+    ca.pem | ca-key.pem | server.pem | server-key.pem
+    ```
+- [获取证书的步骤](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/准备%20etcd%20%26%20flannel%20证书.md)
+- 将证书放入 /opt/etcd/ssl 路径下
+
 __手动部署 etcd__
 * [获取 etcd](https://github.com/etcd-io/etcd/releases/tag/v3.2.12)
 * 解压后将 etcd 和 etcdctl 放入 /opt/etcd/bin 路径 注意赋予执行权限

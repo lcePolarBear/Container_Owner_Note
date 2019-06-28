@@ -1,9 +1,12 @@
 ## 部署 Flannel 网络
 
-__创建 kubernetes 工作路径__
-```
-mkdir -p /opt/kubernetes/{bin,cfg,ssl}
-```
+__准备工作__
+- 创建 kubernetes 工作路径
+    ```
+    mkdir -p /opt/kubernetes/{bin,cfg,ssl}
+    ```
+- flannel 的运行需要 [ssl 证书的认证](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/准备%20etcd%20%26%20flannel%20证书.md)工作，若在部署 etcd 时已部署过证书则无需再生成
+
 __在 master 下__
 
 写入分配的子网段到 etcd 供 flanneld 使用，在 /opt/etcd/ssl 下执行

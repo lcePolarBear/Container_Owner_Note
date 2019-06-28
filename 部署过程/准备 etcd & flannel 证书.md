@@ -31,7 +31,7 @@ __安装证书生成工具 cfssl__
     mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
     ```
 
-__生成 etcd 所需证书__ 
+__手动生成 etcd 所需证书__ 
 - 生成 ca 请求 ca-csr.json
     ```
     {
@@ -100,5 +100,5 @@ __生成 etcd 所需证书__
     ```
     cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=www server-csr.json | cfssljson -bare server
     ```
-* 自动化脚本 [etcd-cert.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/etcd-cert.sh) 生成以上 pem 私钥文件
-    - 注意要修改其中的群集节点 ip 地址！
+__自动化脚本 [etcd-cert.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/etcd-cert.sh) 生成以上 pem 私钥文件__
+- 注意要修改其中的群集节点 ip 地址！
