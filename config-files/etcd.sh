@@ -1,5 +1,5 @@
 #!/bin/bash
-# example: ./etcd.sh etcd01 192.168.10.110 etcd02=https://192.168.10.111:2380,etcd03=https://192.168.10.112:2380
+# example: ./etcd.sh etcd01 192.168.1.10 etcd02=https://192.168.1.11:2380,etcd03=https://192.168.1.12:2380
 
 ETCD_NAME=$1
 ETCD_IP=$2
@@ -17,7 +17,7 @@ ETCD_LISTEN_CLIENT_URLS="https://${ETCD_IP}:2379"
 #[Clustering]
 ETCD_INITIAL_ADVERTISE_PEER_URLS="https://${ETCD_IP}:2380"
 ETCD_ADVERTISE_CLIENT_URLS="https://${ETCD_IP}:2379"
-ETCD_INITIAL_CLUSTER="${ETCD_NAME}=https://${ETCD_IP}:2380,${ETCD_CLUSTER}"
+ETCD_INITIAL_CLUSTER="etcd01=https://${ETCD_IP}:2380,${ETCD_CLUSTER}"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 EOF
@@ -31,8 +31,8 @@ Wants=network-online.target
 
 [Service]
 Type=notify
-EnvironmentFile=/opt/etcd/cfg/etcd
-ExecStart=/opt/etcd/bin/etcd \
+EnvironmentFile=${WORK_DIR}/cfg/etcd
+ExecStart=${WORK_DIR}/bin/etcd \
 --name=\${ETCD_NAME} \
 --data-dir=\${ETCD_DATA_DIR} \
 --listen-peer-urls=\${ETCD_LISTEN_PEER_URLS} \
@@ -42,12 +42,12 @@ ExecStart=/opt/etcd/bin/etcd \
 --initial-cluster=\${ETCD_INITIAL_CLUSTER} \
 --initial-cluster-token=\${ETCD_INITIAL_CLUSTER_TOKEN} \
 --initial-cluster-state=new \
---cert-file=/opt/etcd/ssl/server.pem \
---key-file=/opt/etcd/ssl/server-key.pem \
---peer-cert-file=/opt/etcd/ssl/server.pem \
---peer-key-file=/opt/etcd/ssl/server-key.pem \
---trusted-ca-file=/opt/etcd/ssl/ca.pem \
---peer-trusted-ca-file=/opt/etcd/ssl/ca.pem
+--cert-file=${WORK_DIR}/ssl/server.pem \
+--key-file=${WORK_DIR}/ssl/server-key.pem \
+--peer-cert-file=${WORK_DIR}/ssl/server.pem \
+--peer-key-file=${WORK_DIR}/ssl/server-key.pem \
+--trusted-ca-file=${WORK_DIR}/ssl/ca.pem \
+--peer-trusted-ca-file=${WORK_DIR}/ssl/ca.pem
 Restart=on-failure
 LimitNOFILE=65536
 
@@ -57,5 +57,5 @@ EOF
 
 systemctl daemon-reload
 systemctl enable etcd
-systemctl start etcd
+systemctl restart etcd
 
