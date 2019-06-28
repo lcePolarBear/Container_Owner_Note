@@ -1,19 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-MASTER_ADDRESS=${1:-"192.168.10.110"}
-NODE_ADDRESS=${2:-"192.168.10.141"}
+NODE_ADDRESS=$1
 
 cat <<EOF >/opt/kubernetes/cfg/kube-proxy
-KUBE_LOGTOSTDERR="--logtostderr=true"
-KUBE_LOG_LEVEL="--v=4"
-NODE_HOSTNAME="--hostname-override=${NODE_ADDRESS}"
-KUBE_MASTER="--master=http://${MASTER_ADDRESS}:8080"
-EOF
 
-KUBE_PROXY_OPTS="   \${KUBE_LOGTOSTDERR} \\
-                    \${KUBE_LOG_LEVEL}   \\
-                    \${NODE_HOSTNAME}    \\
-                    \${KUBE_MASTER}"
+KUBE_PROXY_OPTS="--logtostderr=true \\
+--v=4 \\
+--hostname-override=${NODE_ADDRESS} \\
+--cluster-cidr=10.0.0.0/24 \\
+--proxy-mode=ipvs \\
+--kubeconfig=/opt/kubernetes/cfg/kube-proxy.kubeconfig"
+
+EOF
 
 cat <<EOF >/usr/lib/systemd/system/kube-proxy.service
 [Unit]
@@ -22,7 +20,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=-/opt/kubernetes/cfg/kube-proxy
-ExecStart=/opt/kubernetes/bin/kube-proxy ${KUBE_PROXY_OPTS}
+ExecStart=/opt/kubernetes/bin/kube-proxy \$KUBE_PROXY_OPTS
 Restart=on-failure
 
 [Install]
