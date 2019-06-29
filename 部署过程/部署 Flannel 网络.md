@@ -21,45 +21,12 @@ set /coreos.com/network/config  '{ "Network": "172.17.0.0/16", "Backend": {"Type
 __在 node 下__
 
 - 下载 [flanneld](https://github.com/coreos/flannel/releases/) 并将其中的 mk-docker-opts 和 flanneld 放入到 /opt/kubernetes/bin 路径下
+- 自动化脚本 [flannel.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/flannel.sh) 执行 flannel 部署
+- /run/flannel/subnet.env 文件可以查看 flannel 分配的 ip 地址，此文件需事先创建，不然 docker 无法正常启动
 
-- 创建 flanneld 配置文件 /opt/kubernetes/cfg/flanneld
-    ```
-    FLANNEL_OPTIONS="--etcd-endpoints=https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379 \
-    -etcd-cafile=/opt/etcd/ssl/ca.pem \
-    -etcd-certfile=/opt/etcd/ssl/server.pem \
-    -etcd-keyfile=/opt/etcd/ssl/server-key.pem"
-    ```
-- /usr/lib/systemd/system/flanneld.service
-    ```
-    [Unit]
-    Description=Flanneld overlay address etcd agent
-    After=network-online.target network.target
-    Before=docker.service
 
-    [Service]
-    Type=notify
-    EnvironmentFile=/opt/kubernetes/cfg/flanneld
-    ExecStart=/opt/kubernetes/bin/flanneld --ip-masq $FLANNEL_OPTIONS
-    ExecStartPost=/opt/kubernetes/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/subnet.env
-    Restart=on-failure
 
-    [Install]
-    WantedBy=multi-user.target
-    ```
-- cat /run/flannel/subnet.env 可以查看 flannel 分配的 ip 地址
-- 将 DOCKER_NETWORK_OPTION 应用于docker
-    - vi /usr/lib/systemd/system/docker.service
-        ```
-        EnvironmentFile=/run/flannel/subnet.env
-        ExecStart=/usr/bin/dockerd $DOCKER_NETWORK_OPTIONS
-        ```
-    - 重启 docker
 
-__自动化脚本 [flannel.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/flannel.sh) 执行 flannel 部署__
-
-    ```
-    ./flannel.sh https://192.168.10.110:2379,https://192.168.10.111:2379,https://192.168.10.112:2379
-    ```
 __查验连接状态__
 >两个 node 节点的网段不一样是正常的 但 docker 必须跟 node 结点下的 flannel 同一网段
 只要 node 节点之间相互能 ping 通 docker 的 ip 地址就说明正常了
