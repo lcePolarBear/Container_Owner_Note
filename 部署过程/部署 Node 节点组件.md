@@ -10,14 +10,16 @@ __准备工作__
     ```
     ./kubeconfig.sh 192.168.10.110 /opt/kubernetes/ssl/
     ```
-    - 将 kubelet 和 kube-proxy 放入 Node1,Node2 的 /opt/kubernetes/bin 下
+- 将 kubelet | kube-proxy 二进制执行文件放入 Node 节点的 /opt/kubernetes/bin 路径下
 
-__配置 [kubelet.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/kubelet.sh) 文件__
+__自动化脚本 [kubelet.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/kubelet.sh) 部署 kubelet__
 ```
 ./kubelet.sh 192.168.10.111
 ```
+- 在 Master 下执行 `kubectl get csr` 查看 kubelet 是否将 node 节点注册到 master
+- 使用 kubectl certificate approve ···· 来允许节点注册
 
-__配置 [proxy.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/proxy.sh) 文件并执行执行__
+__自动化脚本 [proxy.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/proxy.sh) 部署 kube-proxy__
 ```
 ./proxy.sh 192.168.10.111
 ```

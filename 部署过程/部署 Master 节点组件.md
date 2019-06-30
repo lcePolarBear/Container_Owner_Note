@@ -23,8 +23,8 @@ __通过 shell 脚本创建服务与配置文件__
             ```
             这是正常现象
     - 启动 apiserver 特别容易报错，在此多说一下常用的查验手法
-        - ```tail /var/log/messages -f```
-        - ```systemctl status kube-apiserver -l```
+        - `tail /var/log/messages -f`
+        - `systemctl status kube-apiserver -l`
         - 将配置文件中的日志路径 --log-dir 重定向以方便查验 INFO 日志
         - source 导入配置文件 直接让二进制程序加配置文件参数启动以显示错误
 
@@ -36,7 +36,7 @@ __通过 shell 脚本创建服务与配置文件__
     ```
     ./scheduler.sh 127.0.0.1
     ```
-- 用 ```journalctl -u``` 命令可以查看启动失败的错误提示
+- 用 `journalctl -u` 命令可以查看启动失败的错误提示
 
 
 __确保 etcd 正常的情况下可以检查群集是否正常__
