@@ -16,15 +16,16 @@ __自动化脚本 [kubelet.sh](https://github.com/lcePolarBear/Kubernetes_Basic_
 ```
 ./kubelet.sh 192.168.10.111
 ```
-- 在 Master 下执行 `kubectl get csr` 查看 kubelet 是否将 node 节点注册到 master
-- 使用 kubectl certificate approve ···· 来允许节点注册
+- 在 Master 下执行 `kubectl get csr` 查看请求证书的节点
+- kubectl certificate approve ···· 同意自签证书
+- kubectl get node 查看节点
 
 __自动化脚本 [proxy.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/proxy.sh) 部署 kube-proxy__
 ```
 ./proxy.sh 192.168.10.111
 ```
 
-- /opt/kubernetes/bin/kubectl get csr #查看请求证书的节点
+- /opt/kubernetes/bin/kubectl get csr #
     - CONDITION 为 Pending（不允许）
-    - /opt/kubernetes/bin/kubectl certificate approve NAME 同意自签证书
-- /opt/kubernetes/bin/kubectl get node #查看节点
+    - /opt/kubernetes/bin/kubectl certificate approve NAME 
+- /opt/kubernetes/bin/
