@@ -24,8 +24,3 @@ __自动化脚本 [proxy.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Co
 ```
 ./proxy.sh 192.168.10.111
 ```
-
-- /opt/kubernetes/bin/kubectl get csr #
-    - CONDITION 为 Pending（不允许）
-    - /opt/kubernetes/bin/kubectl certificate approve NAME 
-- /opt/kubernetes/bin/
