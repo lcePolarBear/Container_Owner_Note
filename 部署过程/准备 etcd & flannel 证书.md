@@ -1,11 +1,12 @@
 ## 准备 etcd & flannel 证书
 
 __etcd & flannel 所需证书__
-```
-ca.pem | ca-key.pem | server.pem | server-key.pem
-```
+- ca.pem
+- ca-key.pem
+- server.pem
+- server-key.pem
 
-__安装证书生成工具 cfssl__
+__手动安装证书生成工具 cfssl]__
 
 * 用 openssl 来完成 ssl 的认证非常麻烦，所以我们用 cfssl 来完成
 
@@ -33,72 +34,74 @@ __安装证书生成工具 cfssl__
 
 __手动生成 etcd 所需证书__ 
 - 生成 ca 请求 ca-csr.json
-    ```
-    {
-        "CN": "etcd CA",
-        "key": {
-            "algo": "rsa",
-            "size": 2048
-        },
-        "names": [
-            {
-                "C": "CN",
-                "L": "Beijing",
-                "ST": "Beijing"
-            }
-        ]
-    }
-    ```
-- 生成 ca 根证书 生成 ca.pem | ca-key.pem | ca.csr
+    - `vi ca-csr.json`
+        ```
+        {
+            "CN": "etcd CA",
+            "key": {
+                "algo": "rsa",
+                "size": 2048
+            },
+            "names": [
+                {
+                    "C": "CN",
+                    "L": "Beijing",
+                    "ST": "Beijing"
+                }
+            ]
+        }
+        ```
+- 生成 ca 根证书 生成 ca.pem , ca-key.pem , ca.csr
     ```
     cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
     ```
 - 生成 ca 机构的属性 ca-config.json
-    ```
-    {
-    "signing": {
-        "default": {
-        "expiry": "87600h"
-        },
-        "profiles": {
-        "www": {
-            "expiry": "87600h",
-            "usages": [
-                "signing",
-                "key encipherment",
-                "server auth",
-                "client auth"
-                    ]
-                }
+    - `vi ca-config.json`
+        ```
+        {
+        "signing": {
+            "default": {
+            "expiry": "87600h"
+            },
+            "profiles": {
+            "www": {
+                "expiry": "87600h",
+                "usages": [
+                    "signing",
+                    "key encipherment",
+                    "server auth",
+                    "client auth"
+                ]
+            }
             }
         }
-    }
-    ```
+        }
+        ```
 - 配置 etcd 证书的域名 server-csr.json
-    ```
-    {
-        "CN": "etcd",
-        "hosts": [
-        "192.168.10.110",
-        "192.168.10.111",
-        "192.168.10.112"
-        ],
-        "key": {
-            "algo": "rsa",
-            "size": 2048
-        },
-        "names": [
-            {
-                "C": "CN",
-                "L": "BeiJing",
-                "ST": "BeiJing"
-            }
-        ]
-    }
-    ```
-- 生成 etcd 证书 server.pem | server-kay.pem
+    - `vi server-csr.json`
+        ```
+        {
+            "CN": "etcd",
+            "hosts": [
+                "192.168.1.11",
+                "192.168.1.12",
+                "192.168.1.13"
+                ],
+            "key": {
+                "algo": "rsa",
+                "size": 2048
+            },
+            "names": [
+                {
+                    "C": "CN",
+                    "L": "BeiJing",
+                    "ST": "BeiJing"
+                }
+            ]
+        }
+        ```
+- 生成 etcd 证书 server.pem , server-kay.pem
     ```
     cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=www server-csr.json | cfssljson -bare server
     ```
-__自动化脚本 [etcd-cert.sh](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/config-files/etcd-cert.sh) 生成以上 pem 私钥文件__
 - 注意要修改其中的群集节点 ip 地址！
