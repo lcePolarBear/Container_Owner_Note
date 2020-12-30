@@ -28,75 +28,71 @@ __手动安装证书生成工具 cfssl]__
     ```
 
 __手动生成 etcd 所需证书__ 
-- 生成 ca 请求 ca-csr.json
-    - `vi ca-csr.json`
-        ```
-        {
-            "CN": "etcd CA",
-            "key": {
-                "algo": "rsa",
-                "size": 2048
-            },
-            "names": [
-                {
-                    "C": "CN",
-                    "L": "Beijing",
-                    "ST": "Beijing"
-                }
-            ]
-        }
-        ```
+- 创建 ca 请求: `ca-csr.json`
+    ```
+    {
+        "CN": "etcd CA",
+        "key": {
+            "algo": "rsa",
+            "size": 2048
+        },
+        "names": [
+            {
+                "C": "CN",
+                "L": "Beijing",
+                "ST": "Beijing"
+            }
+        ]
+    }
+    ```
 - 生成 ca 根证书： ca.pem , ca-key.pem , ca.csr
     ```
     cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
     ```
-- 生成 ca 机构的属性 ca-config.json
-    - `vi ca-config.json`
-        ```
-        {
-        "signing": {
-            "default": {
-            "expiry": "87600h"
-            },
-            "profiles": {
-            "www": {
-                "expiry": "87600h",
-                "usages": [
-                    "signing",
-                    "key encipherment",
-                    "server auth",
-                    "client auth"
-                ]
-            }
-            }
-        }
-        }
-        ```
-- 配置 etcd 证书的域名 server-csr.json
-    - `vi server-csr.json`
-        ```
-        {
-            "CN": "etcd",
-            "hosts": [
-                "192.168.1.11",
-                "192.168.1.12",
-                "192.168.1.13"
-                ],
-            "key": {
-                "algo": "rsa",
-                "size": 2048
-            },
-            "names": [
-                {
-                    "C": "CN",
-                    "L": "BeiJing",
-                    "ST": "BeiJing"
-                }
+- 创建 ca 机构的属性 `ca-config.json`
+    ```
+    {
+    "signing": {
+        "default": {
+        "expiry": "87600h"
+        },
+        "profiles": {
+        "www": {
+            "expiry": "87600h",
+            "usages": [
+                "signing",
+                "key encipherment",
+                "server auth",
+                "client auth"
             ]
         }
-        ```
-        - 注意 hosts 下的 ip 地址需要更改为部署 etcd 机器的 ip 地址
-
+        }
+    }
+    }
+    ```
+- 创建 etcd 证书的域名 server-csr.json
+    ```
+    {
+        "CN": "etcd",
+        "hosts": [
+            "192.168.1.11",
+            "192.168.1.12",
+            "192.168.1.13"
+            ],
+        "key": {
+            "algo": "rsa",
+            "size": 2048
+        },
+        "names": [
+            {
+                "C": "CN",
+                "L": "BeiJing",
+                "ST": "BeiJing"
+            }
+        ]
+    }
+    ```
+    - 注意 hosts 下的 ip 地址需要更改为部署 etcd 机器的 ip 地址
 - 生成 etcd 证书 server.pem , server-kay.pem
     ```
     cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=www server-csr.json | cfssljson -bare server
