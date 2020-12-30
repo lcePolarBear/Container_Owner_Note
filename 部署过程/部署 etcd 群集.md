@@ -49,6 +49,10 @@ __部署 etcd__
     ```
     - 把所有节点的 etcd 都启动后 systemctl 才能执行成功
     - 如果因为配置文件写错了导致 etcd 启动有问题，除了修改 etcd.confg 之外还要把 /var/lib/etcd/ 路径下的内容删除掉
+- 更新 service
+    ```
+    systemctl daemon-reload -a
+    ```
 
 __配置 etcd 配置文件__
 - 编写 `etcd.conf` 文件放入 /opt/etcd/cfg/ 下

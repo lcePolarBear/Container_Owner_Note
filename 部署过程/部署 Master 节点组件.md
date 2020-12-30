@@ -3,6 +3,7 @@ __创建群集的集中配置路径__
 ```
 mkdir -p /opt/kubernetes/{bin,cfg,logs,ssl}
 ```
+
 __部署所需要的执行文件和 token__
 - 将 __kube-apiserver , kube-controller-manager , kube-scheduler__ 放入 /opt/kubernetes/bin/ 下
 - 生成 kubernetes 所需要的 [ssl 证书和 Token](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/准备%20Token%20和%20kubernetes%20证书.md)
@@ -66,6 +67,12 @@ __部署配置文件__
     --leader-elect \
     --master=127.0.0.1:8080 \
     --address=127.0.0.1"
+    ```
+__将 kube-apiserver , kube-controller-manager , kube-scheduler 作为 service 使用 systemctl 来管理__
+- 将文件 [kube-apiserver.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-apiserver.service) , [kube-controller-manager.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-controller-manager.service) , [kube-scheduler.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-scheduler.service) 放入 /usr/lib/systemd/system/ 路径下
+- 更新 service 源
+    ```
+    systemctl daemon-reload -a
     ```
 
 __确保 etcd 正常的情况下可以检查群集是否正常__
