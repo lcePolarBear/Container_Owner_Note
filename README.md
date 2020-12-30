@@ -24,7 +24,5 @@ __系统初始化__
 
 __部署流程分步示例__
 - [部署 etcd 存储](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/部署%20etcd%20群集.md)
-- [部署 Flannel 网络](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/部署%20Flannel%20网络.md)
 - [部署 Master 节点组件：kube-apiserver | kube-controller-manager | kube-scheduler](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/部署%20Master%20节点组件.md)
 - [部署 Node 节点组件：kubelet | kube-proxy](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/部署%20Node%20节点组件.md)
-
