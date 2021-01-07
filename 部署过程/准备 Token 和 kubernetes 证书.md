@@ -1,9 +1,15 @@
 ## 准备 Token 和 kubernetes 证书
 
-__kubernetes 所需证书__
+__Master 所需的证书__
 - ca.pem
+- ca-key.pem
 - server.pem
 - server-key.pem
+
+__Node 所需的证书__
+- ca.pem
+- kube-proxy.pem
+- kube-proxy-key.pem
 
 __手动生成 kubernetes 证书__
 - k8s 证书的生成与 etcd 是非常类似的，先创建文件 `ca-csr.json`
@@ -32,12 +38,12 @@ __手动生成 kubernetes 证书__
 - 创建 `ca-config.json` 文件
     ```
     {
-    "signing": {
+      "signing": {
         "default": {
-        "expiry": "87600h"
+          "expiry": "87600h"
         },
         "profiles": {
-        "kubernetes": {
+          "kubernetes": {
             "expiry": "87600h",
             "usages": [
                 "signing",
@@ -45,9 +51,9 @@ __手动生成 kubernetes 证书__
                 "server auth",
                 "client auth"
             ]
+          }
         }
-        }
-    }
+      }
     }
     ```
 - 创建 `server-csr.json` 文件
@@ -55,17 +61,17 @@ __手动生成 kubernetes 证书__
     {
         "CN": "kubernetes",
         "hosts": [
-        "10.0.0.1",
-        "127.0.0.1",
-        "kubernetes",
-        "kubernetes.default",
-        "kubernetes.default.svc",
-        "kubernetes.default.svc.cluster",
-        "kubernetes.default.svc.cluster.local",
-        "192.168.1.11",
-        "192.168.1.20",
-        "192.168.1.21",
-        "192.168.1.22"
+          "10.0.0.1",
+          "127.0.0.1",
+          "kubernetes",
+          "kubernetes.default",
+          "kubernetes.default.svc",
+          "kubernetes.default.svc.cluster",
+          "kubernetes.default.svc.cluster.local",
+          "192.168.1.11",
+          "192.168.1.20",
+          "192.168.1.21",
+          "192.168.1.22"
         ],
         "key": {
             "algo": "rsa",
@@ -90,21 +96,21 @@ __手动生成 kubernetes 证书__
 - 创建 `kube-proxy-csr.json` 文件
     ```
     {
-    "CN": "system:kube-proxy",
-    "hosts": [],
-    "key": {
+      "CN": "system:kube-proxy",
+      "hosts": [],
+      "key": {
         "algo": "rsa",
         "size": 2048
-    },
-    "names": [
+      },
+      "names": [
         {
-        "C": "CN",
-        "L": "BeiJing",
-        "ST": "BeiJing",
-        "O": "k8s",
-        "OU": "System"
+          "C": "CN",
+          "L": "BeiJing",
+          "ST": "BeiJing",
+          "O": "k8s",
+          "OU": "System"
         }
-    ]
+      ]
     }
     ```
 - 执行命令创建证书: kube-proxy.csr , kube-proxy-key.pem , kube-proxy.pem
@@ -117,13 +123,11 @@ __Token__
     ```
     c47ffb939f5ca36231d9e3121a252940,kubelet-bootstrap,10001,"system:node-bootstrapper"
     ```
-- 给 kubelet-bootstrap 授权
-    ```
-    kubectl create clusterrolebinding kubelet-bootstrap \
-    --clusterrole=system:node-bootstrapper \
-    --user=kubelet-bootstrap
-    ```
 - 分析 token.csv 的内容
     - __token__ 是一个访问权限的认证 __kubelet-bootstrap__ 为用户名 __system:kubelet-bootstrap__ 是分组 
     - token.csv 作用是让 node 节点能利用 token 中的用户信息去访问群集
     - Token 用来配置 APIserver ， 同时 Token 用来生成配置 kubelet 的 bootstrap ， 通过这层关系完成的身份认证
+- token 也可以自行生成替换
+    ```
+    head -c 16 /dev/urandom | od -An -t x | tr -d ' '
+    ```

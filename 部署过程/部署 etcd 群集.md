@@ -8,7 +8,7 @@ mkdir -p /opt/etcd/{bin,cfg,ssl}
 __部署所需要的执行文件、证书__
 - [获取 etcd](https://github.com/etcd-io/etcd/releases/tag/v3.3.13)
 - 解压后将 __etcd__ 和 __etcdctl__ 放入 /opt/etcd/bin 路径（注意赋予执行权限）
-- 生成 etcd 的运行所需要的 [ssl 证书](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E5%87%86%E5%A4%87%20etcd%20%E8%AF%81%E4%B9%A6.md)
+- 生成 etcd 的运行所需要的 [ssl 证书](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E7%94%9F%E6%88%90%20etcd%20%E8%AF%81%E4%B9%A6.md)
 - 将证书放入 /opt/etcd/ssl 路径下
 
 __配置 etcd 配置文件__

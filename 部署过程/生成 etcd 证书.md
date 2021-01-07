@@ -52,12 +52,12 @@ __手动生成 etcd 所需证书__
 - 创建 ca 机构的属性 `ca-config.json`
     ```
     {
-    "signing": {
+      "signing": {
         "default": {
-        "expiry": "87600h"
+          "expiry": "87600h"
         },
         "profiles": {
-        "www": {
+          "www": {
             "expiry": "87600h",
             "usages": [
                 "signing",
@@ -65,9 +65,9 @@ __手动生成 etcd 所需证书__
                 "server auth",
                 "client auth"
             ]
+          }
         }
-        }
-    }
+      }
     }
     ```
 - 创建 etcd 证书的域名 server-csr.json
