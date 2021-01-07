@@ -4,14 +4,15 @@ __创建群集的集中配置路径__
 mkdir -p /opt/kubernetes/{bin,cfg,logs,ssl}
 ```
 
-__部署所需要的执行文件和 token__
+__部署所需要的执行文件、证书和 token__
+- 获取 [kubernetes 组件](https://dl.k8s.io/v1.16.15/kubernetes-server-linux-amd64.tar.gz)
 - 将 __kube-apiserver , kube-controller-manager , kube-scheduler__ 放入 /opt/kubernetes/bin/ 下
 - 生成 kubernetes 所需要的 [ssl 证书和 Token](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/准备%20Token%20和%20kubernetes%20证书.md)
 - 将 pem 证书放入 /opt/kubernetes/ssl/
 - 将 token.csv 放入 /opt/kubernetes/cfg/
 
 __部署配置文件__
-- kube-apiserver , kube-controller-manager , kube-scheduler 所需的配置文件都存放在 /opt/kubernetes/cfg/ 路径下
+- 将 kube-apiserver , kube-controller-manager , kube-scheduler 所需的配置文件放在 /opt/kubernetes/cfg/ 路径下
 - `kube-apiserver.conf`
     ```
     KUBE_APISERVER_OPTS="--logtostderr=false \
@@ -70,9 +71,10 @@ __部署配置文件__
     ```
 __将 kube-apiserver , kube-controller-manager , kube-scheduler 作为 service 使用 systemctl 来管理__
 - 将文件 [kube-apiserver.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-apiserver.service) , [kube-controller-manager.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-controller-manager.service) , [kube-scheduler.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-scheduler.service) 放入 /usr/lib/systemd/system/ 路径下
-- 更新 service 源
+- 更新 service 并启动 kube-apiserver , kube-controller-manager , kube-scheduler
     ```
     systemctl daemon-reload -a
+    systemctl start kube-apiserver kube-controller-manager kube-scheduler
     ```
 
 __确保 etcd 正常的情况下可以检查群集是否正常__
