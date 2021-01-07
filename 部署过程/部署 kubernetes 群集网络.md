@@ -18,7 +18,8 @@ __在 Master 部署 flannel 网络__
     ```
     kubectl apply –f kube-flannel.yaml
     ```
-    - 这里实际上是拉取了一个 lizhenliang/flannel:v0.11.0-amd64 的镜像部署在 node 的 docker 上从而实现部署 flannel 网络，可以在 docker 上提前拉取进而节省部署时间
+    - 这里实际上是拉取了一个 lizhenliang/flannel:v0.11.0-amd64 的镜像部署在 node 的 docker 上从而实现部署 flannel 网络
+    - 可以在 docker 上提前拉取进而节省部署时间
 - 查看创建状态
     ```
     kubectl get pods -n kube-system -o wide
@@ -51,4 +52,4 @@ __尝试部署 nginx__
     ```
     kubectl get pods,svc
     ```
-- 如果能以 node ip地址的指定端口访问 nginx 则表示群集搭建的是没有问题的
+- 如果两个 node 的 ip 地址指定端口都可以访问到 nginx 则表示群集搭建的是没有问题的

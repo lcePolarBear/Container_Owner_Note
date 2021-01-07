@@ -5,7 +5,7 @@ __etcd 所需证书__
 - server.pem
 - server-key.pem
 
-__手动安装证书生成工具 cfssl]__
+__手动安装证书生成工具 cfssl__
 * 用 openssl 来完成 ssl 的认证非常麻烦，所以我们用 cfssl 来完成
 * 获取 cfssl
     ```

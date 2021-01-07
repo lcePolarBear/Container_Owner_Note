@@ -6,8 +6,8 @@ mkdir -p /opt/etcd/{bin,cfg,ssl}
 ```
 
 __部署所需要的执行文件、证书__
-- [获取 etcd](https://github.com/etcd-io/etcd/releases/tag/v3.3.13)
-- 解压后将 __etcd__ 和 __etcdctl__ 放入 /opt/etcd/bin 路径（注意赋予执行权限）
+- [获取 etcd](https://github.com/etcd-io/etcd/releases/download/v3.3.13/etcd-v3.3.13-linux-amd64.tar.gz)
+- 解压后将 __etcd__ 和 __etcdctl__ 放入 /opt/etcd/bin 路径下
 - 生成 etcd 运行所需要的 [ssl 证书](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E7%94%9F%E6%88%90%20etcd%20%E8%AF%81%E4%B9%A6.md)
 - 将证书放入 /opt/etcd/ssl 路径下
 
@@ -37,9 +37,8 @@ __将 etcd 作为 service 使用 systemctl 来管理__
     systemctl daemon-reload -a
     systemctl start etcd
     ```
-    > 把所有节点的 etcd 都启动后 systemctl 才能执行成功
-    > 
-    > 如果因为配置文件写错了导致 etcd 启动有问题，除了修改 etcd.confg 之外还要把 /var/lib/etcd/ 路径下的内容删除掉
+    - 把所有节点的 etcd 都启动后 systemctl 才能执行成功
+    - 如果因为配置文件写错了导致 etcd 启动有问题，除了修改 etcd.confg 之外还要把 /var/lib/etcd/ 路径下的内容删除掉
 
 __检查群集状态__
 
