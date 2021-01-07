@@ -1,4 +1,4 @@
-## 准备 etcd 证书
+## 生成 etcd 证书
 
 __etcd 所需证书__
 - ca.pem
