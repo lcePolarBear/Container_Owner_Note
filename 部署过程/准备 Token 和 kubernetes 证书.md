@@ -1,10 +1,11 @@
 ## 准备 Token 和 kubernetes 证书
 
-__Master 所需的证书__
+__Master 所需的证书和 Token__
 - ca.pem
 - ca-key.pem
 - server.pem
 - server-key.pem
+- token.csv
 
 __Node 所需的证书__
 - ca.pem

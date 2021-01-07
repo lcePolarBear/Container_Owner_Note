@@ -8,7 +8,7 @@ mkdir -p /opt/kubernetes/{bin,cfg,logs,ssl}
 ```
 
 __部署所需要的执行文件、证书__
-- 将 __kubelet , kube-proxy__ 放入 /opt/kubernetes/bin/ 下
+- 将已获取 kubernetes 组件中的 __kubelet , kube-proxy__ 放入 /opt/kubernetes/bin/ 下
 - 将 Node 需要的 [ssl 证书](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E5%87%86%E5%A4%87%20Token%20%E5%92%8C%20kubernetes%20%E8%AF%81%E4%B9%A6.md)放入 /opt/kubernetes/bin/ssl 下
 
 __部署配置文件__
@@ -130,7 +130,7 @@ __部署配置文件__
     ```
 
 __在 Master 上将 kubelet-bootstrap 用户绑定到系统群集角色__
-- node 节点上的 kubelet-bootstrap 并没有权限创建证书。所以要创建这个用户的权限并绑定到这个角色上 
+- node 节点上的 kubelet-bootstrap 并没有权限创建证书。所以要在 master 上创建这个用户的权限并绑定到这个角色上 
     ```
     kubectl create clusterrolebinding kubelet-bootstrap \
     --clusterrole=system:node-bootstrapper \
