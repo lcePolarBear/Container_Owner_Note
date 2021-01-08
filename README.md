@@ -1,7 +1,7 @@
 # Kubernetes_Basic_Config_Note
 容器编排引擎 k8s 的基础配置备忘录 
 
-__[Kubernetes 理论基础](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/k8s%20理论基础.md)__
+__[Kubernetes 理论基础](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/kubernetes%20%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.md)__
 
 __二进制部署流程__
 1. [系统初始化](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96.md)
