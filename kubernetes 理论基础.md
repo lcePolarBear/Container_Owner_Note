@@ -13,13 +13,20 @@ __功能列表__
 * 认证 rbac
 
 __基本对象__
-* Pod -   k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
-* Service -   可以看作一组提供相同服务的 Pod 对外访问接口
-* volume 
-* namespace 
+* Pod
+    * k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
+* Deployment
+    * 最常见的工作负载控制器，用于更高级别部署和管理 Pod
+* Service
+    * 为一组 Pod 提供负载均衡，对外提供统一访问接口
 * label
+    * 标签，附加到某个资源上，用于关联对象、查询和筛选
+* namespace
+    * 命名空间，将对象逻辑上隔离，也利于权限控制
+    * 常用来根据不同团队或者项目划分命名空间
+* volume
 * ReplicaSet
-* Deployment  管理 ReplicaSet
+
 * StatefulSet 持久性应用程序
 * DeaminSet   确保节点运行同一 pod
 * Job 定时执行、一次执行任务
