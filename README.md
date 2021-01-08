@@ -12,3 +12,6 @@ __二进制部署流程__
 6. [部署 kubernetes 群集网络](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E9%83%A8%E7%BD%B2%20kubernetes%20%E7%BE%A4%E9%9B%86%E7%BD%91%E7%BB%9C.md)
 7. [部署 Web UI](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E9%83%A8%E7%BD%B2%20Web%20UI.md)
 8. [部署 kubernetes 内部 DNS 服务](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E9%83%A8%E7%BD%B2%20kubernetes%20%E5%86%85%E9%83%A8%20DNS%20%E6%9C%8D%E5%8A%A1.md)
+
+__使用指南__
+- [kubectl 命令行管理工具](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/kubectl%20%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7.md)
