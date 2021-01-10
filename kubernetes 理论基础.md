@@ -8,13 +8,14 @@ __功能列表__
 * 服务发现 环境变量 dns-》访问地址
 * 负载均衡
 * 滚等更新
-* 服务器编排 yaml？
+* 服务器编排 yaml
 * 资源监控
 * 认证 rbac
 
 __基本对象__
 * Pod
     * k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
+    * [通过 YAML 文件实现 Pod 的基本管理]()
 * Deployment
     * 最常见的工作负载控制器，用于更高级别部署和管理 Pod
 * Service
@@ -26,20 +27,25 @@ __基本对象__
     * 常用来根据不同团队或者项目划分命名空间
 * volume
 * ReplicaSet
-
 * StatefulSet 持久性应用程序
 * DeaminSet   确保节点运行同一 pod
 * Job 定时执行、一次执行任务
 
 __master 组件__
-* kube-apiserver    -    集群的统一入口 对所有资源的操作都交给他在提交给 etcd
-* kube-controller-manager   -    集中处理集群中常规后台任务
-* kube-scheduler    -    为新创建的 pod 分配 node
+* kube-apiserver
+    * 集群的统一入口，对所有资源的操作都交给他在提交给 etcd
+* kube-controller-manager
+    * 集中处理集群中常规后台任务
+* kube-scheduler
+    * 为新创建的 pod 分配 node
 
 __node 组件__
-* kubelet   -   Master 在 Node 节点上的 Agent 管理本机运行容器的生命周期 将每个 pod 转换成容器
-* kube-proxy    -   负责为 pod 提供网络代理
-* docker    -   运行容器
+* kubelet
+    * Master 在 Node 节点上的 Agent ，管理本机运行容器的生命周期，将每个 pod 转换成容器
+* kube-proxy
+    * 负责为 pod 提供网络代理
+* docker
+  * 运行容器
 
 __第三方服务__
 * flannel   -   容器间通信
