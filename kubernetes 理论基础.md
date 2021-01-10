@@ -15,7 +15,7 @@ __功能列表__
 __基本对象__
 * Pod
     * k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
-    * [通过 YAML 文件实现 Pod 的基本管理]()
+    * [通过 YAML 文件实现 Pod 的基本管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%20YAML%20%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86.md)
 * Deployment
     * 最常见的工作负载控制器，用于更高级别部署和管理 Pod
 * Service

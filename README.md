@@ -16,3 +16,4 @@ __二进制部署流程__
 __使用指南__
 - [kubectl 命令行管理工具](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/kubectl%20%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7.md)
 - [使用 YAML 文件实现资源编排](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E4%BD%BF%E7%94%A8%20YAML%20%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0%E8%B5%84%E6%BA%90%E7%BC%96%E6%8E%92.md)
+- [通过 YAML 文件实现 Pod 的基本管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%20YAML%20%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86.md)
