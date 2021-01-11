@@ -188,5 +188,4 @@ __CronJob__
                 - -c
                 - date; echo Hello world
               restartPolicy: OnFailure
-
     ```

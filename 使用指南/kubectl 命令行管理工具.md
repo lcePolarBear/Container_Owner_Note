@@ -1,31 +1,4 @@
 ## kubectl 命令行管理工具
-
-__以部署 nginx 为例子展示 kubectl 管理应用程序的生命周期__
-- 创建
-    ```
-    kubectl run nginx --replicas=3 --image=nginx:1.14 --port=80
-    kubectl get deploy,pods
-    ```
-- 发布
-    ```
-    kubectl expose deployment nginx --port=80 --type=NodePort --target-port=80 --name=nginx-service
-    kubectl get service
-    ```
-- 更新
-    ```
-    kubectl set image deployment/nginx nginx=1.15
-    ```
-- 回滚
-    ```
-    kubectl rollout history deploy/nginx
-    kubectl rollout undo deploy/nginx
-    ```
-- 删除
-    ```
-    kubectl delete deploy/nginx
-    kubectl delete svc/nginx-service
-    ```
-
 __[kubectl 命令概要](https://kubernetes.io/docs/reference/kubectl/overview/)__
 - `bash-completion` 安装后能够自动补全 kubectl 命令
 
@@ -46,3 +19,5 @@ __快速部署一个示例网站__
     ```
     kubectl expose deployment java-demo --port=80 --target-port=8080 --type=NodePort
     ```
+
+__[通过工作负载控制器实现 Pod 的管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E6%8E%A7%E5%88%B6%E5%99%A8%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E7%AE%A1%E7%90%86.md)完整步骤__
