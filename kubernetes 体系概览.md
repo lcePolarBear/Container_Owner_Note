@@ -1,4 +1,4 @@
-## 理论基础
+## kubernetes 体系概览
 
 __功能列表__
 * 数据卷 pod（最小k8s单元）
@@ -15,23 +15,30 @@ __功能列表__
 __基本对象__
 * Pod
     * k8s 最基本的操作单元，代表群集中一个进程，内部封装单、多个容器
+    * volume
+        * 多个 Pod 共享存储
     * [通过 YAML 文件实现 Pod 的基本管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%20YAML%20%E6%96%87%E4%BB%B6%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86.md)
-* Deployment
-    * 最常见的工作负载控制器，用于更高级别部署和管理 Pod
+* 工作负载控制器
+    * Deployment
+        * 最常见的工作负载控制器，用于更高级别部署和管理 Pod
+        * ReplicaSet
+            * 保持 Pod 副本数量
+    * DeaminSet
+        * 确保节点运行同一 pod
+    * Job
+        * 定时执行、一次执行任务
     * [通过工作负载控制器实现 Pod 的管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E6%8E%A7%E5%88%B6%E5%99%A8%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E7%AE%A1%E7%90%86.md)
 * Service
     * 为一组 Pod 提供负载均衡，对外提供统一访问接口
     * [深入理解 Service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20Service.md)
 * label
     * 标签，附加到某个资源上，用于关联对象、查询和筛选
+    * 使用标签[管理 Pod 的调度](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E7%AE%A1%E7%90%86%20Pod%20%E7%9A%84%E8%B0%83%E5%BA%A6.md)
 * namespace
     * 命名空间，将对象逻辑上隔离，也利于权限控制
     * 常用来根据不同团队或者项目划分命名空间
-* volume
-* ReplicaSet
-* StatefulSet 持久性应用程序
-* DeaminSet   确保节点运行同一 pod
-* Job 定时执行、一次执行任务
+* StatefulSet
+    * 持久性应用程序
 
 __master 组件__
 * kube-apiserver
