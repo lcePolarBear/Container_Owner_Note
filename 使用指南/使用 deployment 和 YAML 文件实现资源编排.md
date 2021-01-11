@@ -1,6 +1,6 @@
-## 资源编排
+## 使用 deployment 和 YAML 文件实现资源编排
 
-__了解 YAML 语法格式__
+__YAML 语法格式__
 - 缩进表示层级关系
 - 不支持制表符 "tab" 缩进，使用空格缩进
 - 开头缩进 2 个空格
@@ -9,11 +9,11 @@ __了解 YAML 语法格式__
 - "#" 标识注释
 
 __YAML 对资源的管理__
-- 创建资源对象
+- 使用命令行创建镜像
     ```
     kubectl create deployment web --image=lizhenliang/java-demo -n default
     ```
-    等同于以下 `deployment.yaml` 文件
+- 使用 YAML 文件创建镜像
     ```
     apiVersion: apps/v1
     kind: Deployment
@@ -44,11 +44,11 @@ __YAML 对资源的管理__
     - metadata : Pod元数据
     - spec : Pod规格
     - containers : 容器配置
-- 创建 Service ，对外暴露资源
+- 使用命令行创建 Service ，对外暴露资源
     ```
     kubectl expose deployment web --port=80 --target-port=8080 --type=NodePort -n default
     ```
-    等同于以下 `service.yaml` 文件
+- 使用 YAML 文件创建 Service
     ```
     apiVersion: v1
     kind: Service
@@ -73,7 +73,7 @@ __YAML 对资源的管理__
 
     kubectl delete -f deployment.yaml
     ```
-__更好的上手 YAML__
+__导出 deployment 生成的 YAML__
 - 用 create 命令生成 YAML
     ```
     kubectl create deployment nginx --image=nginx:1.16 -o yaml --dry-run=client > my-deploy.yaml
