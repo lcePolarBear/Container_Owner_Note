@@ -70,7 +70,7 @@ __手动生成 etcd 所需证书__
       }
     }
     ```
-- 创建 etcd 证书的域名 server-csr.json
+- 创建 etcd 证书的域名 `server-csr.json`
     ```
     {
         "CN": "etcd",

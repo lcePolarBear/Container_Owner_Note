@@ -31,7 +31,7 @@ __配置 etcd 配置文件__
     > 注意修改 URLS 的地址为本机的地址， ETCD_INITIAL_CLUSTER 参数为 etcd 群集的所有 ip 地址
 
 __将 etcd 作为 service 使用 systemctl 来管理__
-- 将文件 [etcd.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/etcd.server) 放入 /usr/lib/systemd/system/ 路径下
+- 将文件 [etcd.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/etcd.service) 放入 /usr/lib/systemd/system/ 路径下
 - 更新 service 并启动 etcd
     ```
     systemctl daemon-reload -a
