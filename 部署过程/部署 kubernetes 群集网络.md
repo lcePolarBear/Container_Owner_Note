@@ -4,7 +4,7 @@ __在 Node 部署 CNI 网络__
 - 获取 [CNI 二进制文件](https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz)
 - 创建 CNI 工作目录
     ```
-    mkdir /opt/cni/bin /etc/cni/net.d
+    mkdir /opt/cni/bin /etc/cni/net.d -p
     ```
 - 将二进制执行文件解压到工作目录下
     ```
@@ -16,7 +16,7 @@ __在 Master 部署 flannel 网络__
 - 创建配置文件 [kube-flannel.yaml](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-flannel.yaml)
 - 创建 flannel 网络
     ```
-    kubectl apply –f kube-flannel.yaml
+    kubectl apply -f kube-flannel.yaml
     ```
     - 这里实际上是拉取了一个 lizhenliang/flannel:v0.11.0-amd64 的镜像部署在 node 的 docker 上从而实现部署 flannel 网络
     - 可以在 docker 上提前拉取进而节省部署时间
@@ -28,7 +28,7 @@ __在 Master 部署 flannel 网络__
     - 创建配置文件 [apiserver-to-kubelet-rbac.yaml](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/apiserver-to-kubelet-rbac.yaml)
     - 创建链接
         ```
-        kubectl apply –f apiserver-to-kubelet-rbac.yaml
+        kubectl apply -f apiserver-to-kubelet-rbac.yaml
         ```
     - 查看日志
         ```

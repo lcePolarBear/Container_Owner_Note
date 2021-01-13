@@ -21,3 +21,5 @@ __使用指南__
 - [通过工作负载控制器实现 Pod 的管理](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E9%80%9A%E8%BF%87%E5%B7%A5%E4%BD%9C%E8%B4%9F%E8%BD%BD%E6%8E%A7%E5%88%B6%E5%99%A8%E5%AE%9E%E7%8E%B0%20Pod%20%E7%9A%84%E7%AE%A1%E7%90%86.md)
 - [深入理解 Service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20Service.md)
 - [使用 Ingress 对外暴露应用](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/%E4%BD%BF%E7%94%A8%20Ingress%20%E5%AF%B9%E5%A4%96%E6%9A%B4%E9%9C%B2%E5%BA%94%E7%94%A8.md)
+
+__项目部署案例__

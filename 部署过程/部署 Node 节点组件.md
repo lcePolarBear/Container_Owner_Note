@@ -9,7 +9,7 @@ mkdir -p /opt/kubernetes/{bin,cfg,logs,ssl}
 
 __部署所需要的执行文件、证书__
 - 将已获取 kubernetes 组件中的 __kubelet , kube-proxy__ 放入 /opt/kubernetes/bin/ 路径下
-- 将 Node 需要的证书放入 /opt/kubernetes/bin/ssl 路径下
+- 将 Node 需要的证书放入 /opt/kubernetes/ssl 路径下
 
 __部署配置文件__
 - 将 kubelet , kube-proxy 所需的配置文件放在 /opt/kubernetes/cfg/ 路径下
@@ -142,7 +142,7 @@ __将 kubelet , kube-proxy 作为 service 使用 systemctl 来管理__
 - 更新 service 并启动 kubelet , kube-proxy
     ```
     systemctl daemon-reload -a
-    systemctl start kubelet , kube-proxy
+    systemctl start kubelet kube-proxy
     ```
 
 __在 Master 上注册两个 node__
