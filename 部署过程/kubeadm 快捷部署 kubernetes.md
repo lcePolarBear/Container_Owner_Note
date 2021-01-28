@@ -105,7 +105,7 @@ __测试kubernetes集群__
     ```
 - 访问地址：http://NodeIP:Port  
 
-## 8. 部署 Dashboard
+__部署 Dashboard__
 - 获取部署 yaml 文件
     ```
     wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
