@@ -33,3 +33,46 @@ __监控群集资源利用率__
         kubectl top node k8s-node1
         kubectl top pod nginx
         ```
+
+__管理 k8s 日志__
+- 管理组件日志
+    - systemd 守护进程管理的组件
+        ```
+        journalctl -u kubelet > out.log
+        ```
+    - Pod 部署的组件
+        ```
+        kubectl logs kube-proxy-btz4p -n kube-system
+        ```
+    - 系统日志
+        ```
+        /var/log/messages
+        ```
+- 管理应用程序日志
+    - 查看应用程序日志
+        ```
+        kubectl logs -f nginx
+        ```
+    - 使用 emptyDir 数据卷将日志文件持久化到宿主机
+        ```
+        /var/lib/kubelet/pods/<pod-id>/volumes/kubernetes.io~empty-dir/logs/access.log
+        ```
+    - 在部署容器时同时部署一个 busybox 容器（边车容器）来映射日志
+        ```
+        spec:
+          containers:
+          - name: web         # 业务容器
+            image: lizhenliang/nginx-php
+            volumeMounts:
+            - name: logs
+              mountPath: /usr/lcoal/nginx/logs
+          - name: web-logs    # 日志采集容器
+            image: busybox
+            args: [/bin/sh, -c, 'tail -f /opt/access.log']
+            volumeMount:
+            - name: logs
+              mountPath: /opt
+          volumes:
+          - name: logs
+            emptyDir: {}
+        ```
