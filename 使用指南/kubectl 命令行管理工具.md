@@ -1,6 +1,11 @@
 ## kubectl 命令行管理工具
-__[kubectl 命令概要](https://kubernetes.io/docs/reference/kubectl/overview/)__
-- `bash-completion` 安装后能够自动补全 kubectl 命令
+- [kubectl 命令概要](https://kubernetes.io/zh/docs/reference/kubectl/overview/)
+- 自动补全 kubectl 命令
+    - yum 安装 `bash-completion`
+    - 重启 shell 后执行
+        ```
+        source <(kubectl completion bash)
+        ```
 
 __kubeconfig 配置文件__
 - kubectl 能够管理群集信息是因为存在 `./kube/config` 配置文件能够让 kubectl 与 api-server 连接
