@@ -58,7 +58,7 @@ __管理 k8s 日志__
         /var/lib/kubelet/pods/<pod-id>/volumes/kubernetes.io~empty-dir/logs/access.log
         ```
     - 在部署容器时同时部署一个 busybox 容器（边车容器）来映射日志
-        ```
+        ```yaml
         spec:
           containers:
           - name: web         # 业务容器
