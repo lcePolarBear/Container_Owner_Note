@@ -1,16 +1,17 @@
 ## 通过工作负载控制器实现 Pod 的管理
 
 __什么是工作负载控制器__    
-- 工作负载控制器（ Workload Controllers ）是 K8s 的一个抽象概念，用于更高级层次对象。用于部署和管理 Pod
-    - 无状态应用部署： Deployment
-    - 有状态应用部署： StatefulSet
-    - 确保所有 Node 运行同一个 Pod: DaemonSet
-    - 一次性任务： Job
-    - 定时任务： Cronjob
-- 控制器的作用
-  - 管理 Pod 对象
-  - 使用标签与 Pod 关联
-  - 控制器实现了 Pod 的运维，例如滚动更新、伸缩、副本管理、维护 Pod 状态等
+- 工作负载控制器 （Workload Controllers) 是 K8s 的一个抽象概念，用于部署和管理 Pod 的更高级层次对象
+    - `Deployment` : 无状态应用部署
+    - `StatefulSet` : 有状态应用部署
+    - `DaemonSet` : 确保所有 Node 运行同一个 Pod
+    - `Job` : 一次性任务
+    - `Cronjob` : 定时任务
+
+__控制器的作用__
+- 管理 Pod 对象
+- 使用标签与 Pod 关联
+- 控制器实现了 Pod 的运维，例如滚动更新、伸缩、副本管理、维护 Pod 状态等
 
 __Deployment 控制器__
 - 功能
@@ -19,7 +20,7 @@ __Deployment 控制器__
     - 提供声明式更新，例如只更新一个新的镜像
 - 部署
     - 使用 YAML 文件部署镜像
-        ```
+        ```yaml
         apiVersion: apps/v1
         kind: Deployment
         metadata:
@@ -50,13 +51,10 @@ __Deployment 控制器__
         kubectl apply -f xxx.yaml
         ```
         ```
-        kubectl set image deployment/web nginx=nginx:1.16
-        ```
-        ```
-        kubectl edit deployment/web
+        kubectl set image deployment/web nginx=nginx:1.19 --recode
         ```
     - 限制进行滚动更新的 Pod 数量
-        ```
+        ```yaml
         apiVersion: apps/v1
         kind: Deployment
         metadata:
@@ -82,6 +80,27 @@ __Deployment 控制器__
               - name: web
                 image: nginx:1.16
         ```
+    - 查看升级状态
+        ```
+        kubectl rollout status deployment/web
+        ```
+- 弹性伸缩
+    - 手动扩容
+        ```
+        kubectl scale deployment web --replicas=10
+        ```
+    - 自动水平扩容（注意 Pod 必须配置 `resource.requests` ）
+        ```
+        kubectl autoscale deployment web --min=3 --max=10 --cpu-percent=80
+        ```
+    - 查看伸缩的状况
+        ```
+        kubectl get hpa
+        ```
+    - 尝试使用 `httpd-tools` 工具进行压测
+        ```
+        ab -n 100000 -c 1000 http://{cluster-ip}/index.html
+        ```
 - 回滚
     > 回滚是重新部署某一次部署时的状态，即当时版本所有配置
     - 查看历史发布版本
@@ -96,18 +115,19 @@ __Deployment 控制器__
         ```
         kubectl rollout undo deployment/web --to-revision=2
         ```
-- 水平扩容
-    > replicas 参数控制 Pod 副本数量
-    - 修改 yaml 文件里 replicas 值，再 apply
-    - 使用命令行
-        ```
-        kubectl scale deployment web --replicas=10
-        ```
 - 下线
     ```
     kubectl delete deploy/web
     kubectl delete svc/web
     ```
+- 滚动升级与回滚机制
+    - ReplicaSet : 副本集
+        - 管理 Pod 副本数量，不断对比当前 Pod 数量与期望 Pod 数量
+        - Deployment 每次发布都会创建一个 RS 作为记录，用于实现回滚
+        ```
+        kubectl get rs  # 查看 RS 记录 
+        kubectl rollout history deployment web  # 版本对应 RS 记录
+        ```
 - ReplicaSet
     - ReplicaSet 控制器用途
         - Pod 副本数量管理，不断对比当前 Pod 数量与期望 Pod 数量
