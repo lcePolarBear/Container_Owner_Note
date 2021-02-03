@@ -157,7 +157,7 @@ __StatefulSet 控制器__
       ports:
       - port: 80
         name: web
-      clusterIP: None   # 设置为无头服务
+      clusterIP: None   # 设置为无头服务 Headless Service
       selector:
         app: nginx
     ---
@@ -169,7 +169,7 @@ __StatefulSet 控制器__
       selector:
         matchLabels:
           app: nginx
-      serviceName: "nginx"
+      serviceName: "nginx"  # 指定 StatefulSet 控制器要使用这个 Headless Service
       replicas: 3
       template:
         metadata:
@@ -186,7 +186,7 @@ __StatefulSet 控制器__
             volumeMounts:
             - name: www
               mountPath: /usr/share/nginx/html
-      volumeClaimTemplates:
+      volumeClaimTemplates:   # StatefulSet 的存储卷使用 VolumeClaimTemplate 创建
       - metadata:
           name: www
         spec:
