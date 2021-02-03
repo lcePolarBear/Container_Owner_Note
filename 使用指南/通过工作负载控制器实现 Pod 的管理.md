@@ -2,8 +2,8 @@
 
 __什么是工作负载控制器__    
 - 工作负载控制器 （Workload Controllers) 是 K8s 的一个抽象概念，用于部署和管理 Pod 的更高级层次对象
-    - `Deployment` : 无状态应用部署
-    - `StatefulSet` : 有状态应用部署
+    - `Deployment` : 无状态应用部署（实例之间无独立数据，所以可以实现负载均衡）
+    - `StatefulSet` : 有状态应用部署（实例之间有独立数据，所以无法负载均衡）
     - `DaemonSet` : 确保所有 Node 运行同一个 Pod
     - `Job` : 一次性任务
     - `Cronjob` : 定时任务
@@ -140,6 +140,66 @@ __Deployment 控制器__
             ```
             kubectl rollout history deployment web
             ```
+
+__StatefulSet 控制器__
+- 常用来做分布式应用和数据库集群，像 etcd 就无法使用 deployment 来部署，因为新增 Pod 的IP 无法加入群集网络。而 StatefulSet 能够提供稳定的网络和存储
+    - 稳定的网络的实现 : 设置 service 的 `clusterIP: None` 实现无论怎么调度，每个 Pod 都有一个永久不变的 ID
+    - 稳定的存储的实现 : 设置 volumeClaimTemplates 的 `accessModes: [ "ReadWriteOnce" ]`
+- 示例 : 演示 StatefulSet 的组件
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      ports:
+      - port: 80
+        name: web
+      clusterIP: None   # 设置为无头服务
+      selector:
+        app: nginx
+    ---
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: web
+    spec:
+      selector:
+        matchLabels:
+          app: nginx
+      serviceName: "nginx"
+      replicas: 3
+      template:
+        metadata:
+          labels:
+            app: nginx
+        spec:
+          terminationGracePeriodSeconds: 10
+          containers:
+          - name: nginx
+            image: nginx:1.16
+            ports:
+            - containerPort: 80
+              name: web
+            volumeMounts:
+            - name: www
+              mountPath: /usr/share/nginx/html
+      volumeClaimTemplates:
+      - metadata:
+          name: www
+        spec:
+          accessModes: [ "ReadWriteOnce" ]    # 为创建的每一个 pod 分配一个单独的存储空间
+          storageClassName: "managed-nfs-storage"
+          resources:
+            requests:
+              storage: 1Gi
+    ```
+    - 创建后可以通过 kubectl get pv , kubectl get pvc 来查看 Pod 与存储之间一一对应的关系
+    - Pod DNS 解析名称 : $(Pod 名称).$(服务名称).$(命名空间)svc.cluster.local ，可以通过 busybox 使用 lookup nginx 命令查看
+- 相对于 Deployment , StatefulSet 的域名，主机名和 PVC 是唯一的
+
 __DaemonSet 控制器__
 - 功能
     - 在每一个 Node 上运行一个 Pod
