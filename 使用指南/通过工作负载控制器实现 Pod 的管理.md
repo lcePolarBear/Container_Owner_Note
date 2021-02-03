@@ -205,7 +205,7 @@ __DaemonSet 控制器__
     - 在每一个 Node 上运行一个 Pod
     - 新加入的 Node 也同样会自动运行一个 Pod
 - 示例：部署日志采集程序
-    ```
+    ```yaml
     apiVersion: apps/v1
     kind: DaemonSet           # kind 为 DaemonSet
     metadata:
@@ -231,7 +231,7 @@ __DaemonSet 控制器__
 __Job__
 - 功能 ： 执行一次任务
 - 示例 ： 计算 pi 的值
-    ```
+    ```yaml
     apiVersion: batch/v1
     kind: Job             # kind 为 Job
     metadata:
@@ -249,7 +249,7 @@ __Job__
 __CronJob__
 - 功能 ： CronJob 用于实现定时任务，像 Linux 的 Crontab 一样
 - 示例 ： 定时打印
-    ```
+    ```yaml
     apiVersion: batch/v1beta1
     kind: CronJob
     metadata:
