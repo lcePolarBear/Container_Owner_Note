@@ -291,7 +291,7 @@ __ConfigMap : 应用程序配置文件存储__
             name: configmap-demo
             items:
             - key: "redis.properties"
-              path: "redis.config"    # 指定挂载到 Pod volumeMounts 的文件名称
+              path: "redis.properties"    # 挂载到路径的文件名称
     ```
     - 进入 Pod 查看 echo $ABCD 能否显示变量，查看 /config 路径下是否有文件 redis.properties
 
