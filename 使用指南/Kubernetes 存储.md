@@ -243,3 +243,107 @@ __使用 [StorageClass 对象](https://v1-19.docs.kubernetes.io/zh/docs/concepts
           storage: 5Gi
     ```
 - 以后容器 pvc 申请 pv 不需要先创建 pv ，只需要在 PVC 指定不同的 claimName 就可以
+
+__ConfigMap : 应用程序配置文件存储__
+- 使用 ConfigMap 来将你的配置数据和应用程序代码分开，在 ConfigMap 中保存的数据不可超过 1 MiB
+- Pod 使用 configmap 数据有 `变量注入` 和 `数据卷挂载` 两种方式
+- 示例 : Pod 使用 ConfigMap 导入环境变量
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: configmap-demo
+    data:
+      abc: "123"    # 设置参数
+      cde: "456"
+
+      redis.properties: |   # 设置参数集合
+        port: 6379
+        host: 192.168.31.10
+    ```
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: configmap-demo-pod
+    spec:
+      containers:
+        - name: demo
+          image: nginx
+          env:
+            - name: ABCD    # 创建一个变量以引用 ConfigMap 变量
+              valueFrom:
+                configMapKeyRef:    # 引用 ConfigMap
+                  name: configmap-demo
+                  key: abc
+            - name: CDEF
+              valueFrom:
+                configMapKeyRef:
+                name: configmap-demo
+                key: cde
+          volumeMounts:
+          - name: config
+            mountPath: "/config"
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:    # 引用 ConfigMap 数据卷
+            name: configmap-demo
+            items:
+            - key: "redis.properties"
+              path: "redis.properties"    # 挂载到路径的文件名称
+    ```
+    - 进入 Pod 查看 echo $ABCD 能否显示变量，查看 /config 路径下是否有文件 redis.properties
+
+__Secret : 加密应用程序配置文件存储__
+- Secret 主要存储敏感数据，所有的数据要经过 base64 编码，常用来存储凭证，例如
+    - docker-registry : 存储镜像仓库认证信息
+    - generic : 存储用户名密码
+    - tls : 存储证书，例如 HTTPS 证书
+- 示例 : 将加密后的密码放入参数文件供 Pod 调用
+    ```bash
+    echo -n 'admin' | base64
+    echo -n '1f2d1e2e67df' | base64
+    ```
+    ```yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: db-user-pass
+    type: Opaque
+    data:
+      username: YWRtaW4=
+      password: MWYyZDFlMmU2N2Rm
+    ```
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secret-demo-pod
+    spec:
+      containers:
+        - name: demo
+          image: nginx
+          env:
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-user-pass
+                  key: username
+            - name: PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-user-pass
+                  key: password
+          volumeMounts:
+          - name: config
+            mountPath: "/config"
+            readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: db-user-pass
+            items:
+            - key: username
+              path: my-username
+    ```
