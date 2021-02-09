@@ -20,10 +20,10 @@ __监控群集资源利用率__
     - Metrics Server 是一个集群范围的资源使用情况的数据聚合器，作为一个应用部署在集群中
     - Metric server 从每个节点上 Kubelet API 收集指标，通过 Kubernetes 聚合器注册在 Master APIServer 中
 - Metric Server 的部署
-    - 获取 [components.yaml 文件])()
+    - 获取 [components.yaml 文件](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/components.yaml)
         - 修改 image 拉取的地址
-        - 忽略证书认证 `--kubelet-insecure-tls`
-        - 使用节点 IP 连接 kubelet `--kubelet-preferred-address-types=InternalIP`
+        - 忽略证书认证 : --kubelet-insecure-tls
+        - 使用节点 IP 连接 kubelet : --kubelet-preferred-address-types=InternalIP
     - 部署
         ```
         kubectl apply -f components.yaml
