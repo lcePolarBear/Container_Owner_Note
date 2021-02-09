@@ -2,7 +2,7 @@
 
 __在所有节点的准备工作__
 - 添加阿里云 YUM 软件源
-    ```
+    ```bash
     cat > /etc/yum.repos.d/kubernetes.repo << EOF
     [kubernetes]
     name=Kubernetes
@@ -21,11 +21,11 @@ __在所有节点的准备工作__
     ```
 
 __部署Kubernetes Master__
-> https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file
+> 结合一份配置文件来使用 kubeadm init _[官方链接](https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file)_
 > 
-> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#initializing-your-control-plane-node 
+> 初始化控制平面节点 [官方链接](https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E8%8A%82%E7%82%B9)
 - 创建 Master 节点
-    ```
+    ```bash
     kubeadm init \
       --apiserver-advertise-address=192.168.1.202 \
       --image-repository registry.aliyuncs.com/google_containers \
@@ -40,8 +40,8 @@ __部署Kubernetes Master__
     - --service-cidr 集群内部虚拟网络， Pod 统一访问入口
     - --pod-network-cidr Pod 网络，与下面部署的CNI网络组件 yaml 中保持一致
     - 或者使用配置文件引导
-        ```
-        vi kubeadm.conf
+        ```bash
+        # vi kubeadm.conf
         apiVersion: kubeadm.k8s.io/v1beta2
         kind: ClusterConfiguration
         kubernetesVersion: v1.18.0
@@ -49,7 +49,8 @@ __部署Kubernetes Master__
         networking:
           podSubnet: 10.244.0.0/16 
           serviceSubnet: 10.96.0.0/12 
-
+        ```
+        ```bash
         kubeadm init --config kubeadm.conf --ignore-preflight-errors=all
         ```
 - 保存好输出的 kubeadm join 记录，用于添加群集节点
@@ -58,47 +59,50 @@ __部署Kubernetes Master__
     mkdir -p $HOME/.kube
     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     sudo chown $(id -u):$(id -g) $HOME/.kube/config
-    kubectl get nodes
+    ```
+    ```bash
+    # kubectl get nodes
     NAME         STATUS   ROLES    AGE   VERSION
     k8s-node1   Ready    master   2m   v1.18.0
     ```
 
 __加入Kubernetes Node__
+> kubeadm join 命令 [官方指令](https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-join/)
 - 向集群添加新节点，执行在 kubeadm init 输出的 kubeadm join 命令
-    ```
+    ```bash
     kubeadm join 192.168.1.202:6443 --token esce21.q6hetwm8si29qxwn \
         --discovery-token-ca-cert-hash sha256:00603a05805807501d7181c3d60b478788408cfe6cedefedb1f97569708be9c5
     ```
     - 默认 token 有效期为 24 小时，当过期之后，该 token 就不可用了。这时就需要重新创建 token
     - 如果没记下来，可以在 master 成功新生成
-        ```
+        ```bash
         kubeadm token create --print-join-command
         ```
-        > <https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/>
+
 
 部署容器网络 (CNI)
-> https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network 
+> 安装 Pod 网络附加组件 _[官方链接](https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network)_
 
 Calico 是一个纯三层的数据中心网络方案， Calico 支持广泛的平台，包括 Kubernetes、OpenStack 等
 
 Calico 在每一个计算节点利用 Linux Kernel 实现了一个高效的虚拟路由器（ vRouter） 来负责数据转发，而每个 vRouter 通过 BGP 协议负责把自己上运行的 workload 的路由信息向整个 Calico 网络内传播
 
 此外， Calico  项目还实现了 Kubernetes 网络策略，提供 ACL 功能
-> https://docs.projectcalico.org/getting-started/kubernetes/quickstart 
+
 - 在 kubernetes 部署 Calico
-    ```
+    ```bash
     wget https://docs.projectcalico.org/manifests/calico.yaml
     ```
     - 修改里面定义 Pod 网络(CALICO_IPV4POOL_CIDR) ，与前面 kubeadm init 指定的一样
     - 修改完后应用清单
-        ```
+        ```bash
         kubectl apply -f calico.yaml
         kubectl get pods -n kube-system
         ```
 
 __测试kubernetes集群__
 - 在 Kubernetes 集群中创建一个 pod 验证是否正常运行
-    ```
+    ```bash
     kubectl create deployment nginx --image=nginx
     kubectl expose deployment nginx --port=80 --type=NodePort
     kubectl get pod,svc
@@ -107,11 +111,11 @@ __测试kubernetes集群__
 
 __部署 Dashboard__
 - 获取部署 yaml 文件
-    ```
+    ```bash
     wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
     ```
 - 默认 Dashboard 只能集群内部访问，修改 Service 为 NodePort 类型，暴露到外部
-    ```
+    ```yaml
     kind: Service
     apiVersion: v1
     metadata:
@@ -129,7 +133,7 @@ __部署 Dashboard__
         k8s-app: kubernetes-dashboard
     ```
 - 部署和查看 Dashboard
-    ```
+    ```bash
     kubectl apply -f recommended.yaml
     kubectl get pods -n kubernetes-dashboard
     ```
