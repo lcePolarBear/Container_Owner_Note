@@ -39,6 +39,10 @@
     # -n 表示指定命名空间
     # -l 表示指定标签
     ```
+
+### 查看 pod 日志，并将日志中 Error 的行记录到指定文件
+- 使用 kubectl logs 导出 pod 的日志后 使用 |grep error 过滤并导出内容
+
 ### 查看指定标签使用 cpu 最高的 pod 并记录到到指定文件
 1. 考试环境的 K8S 应该部署了 Metrics
 2. 使用 kubectl top 来查看
@@ -59,3 +63,8 @@
 ### 向 pod 中添加一个 init 容器， init 容器创建一个空文件，如果该空文件没有被检测到， pod 就退出
 1. 创建一个包含 Init 容器的 Pod [官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-pod-initialization/#creating-a-pod-that-has-an-init-container)
 2. 查看存活检查 livenessProbe 示例 _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-liveness-command)_
+
+### 创建一个 deployment 副本数 3 ，然后滚动更新镜像版本，并记录这个更新记录，最后再回滚到上一个版本
+1. 导出 deployment.yaml 并部署
+2. 修改 yaml 文件镜像版本号并使用 --record=xxx 参数重新部署
+3. 回滚到之前的修订版本 _[官方链接](https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/#rolling-back-to-a-previous-revision)_
