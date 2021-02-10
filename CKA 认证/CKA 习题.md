@@ -68,3 +68,62 @@
 1. 导出 deployment.yaml 并部署
 2. 修改 yaml 文件镜像版本号并使用 --record=xxx 参数重新部署
 3. 回滚到之前的修订版本 _[官方链接](https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/#rolling-back-to-a-previous-revision)_
+
+### 给 web deployment 扩容副本数为 3
+- 使用 kubectl scale 命令进行扩容
+
+### 创建一个 pod ，其中运行着 nginx , redis , memcached , consul 4 个容器
+1. 导出一个 pod.yaml 模板
+2. 向 pod.yaml 添加镜像信息并启动
+
+### 生成一个 deployment yaml 文件保存到 /opt/deploy.yaml
+ - 使用 kubectl create 导出 deployment.yaml 模板时指定路径即可
+
+### 创建一个 pod ，分配到指定标签 node 上
+1. 导出一个 pod.yaml
+2. 以指定标签添加到 `nodeSelector` _[官方链接](https://kubernetes.io/zh/docs/concepts/scheduling-eviction/assign-pod-node/#%E6%AD%A5%E9%AA%A4%E4%BA%8C-%E6%B7%BB%E5%8A%A0-nodeselector-%E5%AD%97%E6%AE%B5%E5%88%B0-pod-%E9%85%8D%E7%BD%AE%E4%B8%AD)_
+
+### 确保在每个节点上运行一个 pod
+- 使用 DaemonSet 部署镜像 _[官方链接](https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/#%E5%88%9B%E5%BB%BA-daemonset)_
+
+### 查看集群中状态为 ready 的 node 数量，不包含被打了 NodeSchedule 污点的节点，并将结果写到 /opt/node.txt
+1. 列出所有状态为 Ready 的节点名称
+    ```bash
+    kubectl get node | grep Ready | awk '{print $1}'
+    ```
+2. 查看 k8s-node1 节点的污点信息
+    ```bash
+    kubectl describe node k8s-node1 | grep Taint
+    ```
+3. 查看所有节点的污点信息
+    ```bash
+    kubectl describe node $(kubectl get node | grep Ready | awk '{print $1}') | grep Taint
+    ```
+4. 将污点信息不包含 NoSchedule 字符串的行进行计数
+    ```bash
+    kubectl describe node $(kubectl get node | grep Ready | awk '{print $1}') | grep Taint | grep -vc NoSchedule
+    # -v 选择不包含 NoSchedule 字符串的行
+    # -c 将选择出来的行进行计数
+    ```
+### 设置成 node 不能调度，并使已被调度的 pod 重新调度
+1. 设置节点为不可调度 : kubectl cordon
+2. 驱除节点上的 pod : kubectl drain
+
+### 给一个 pod 创建 service ，并可以通过 ClusterIP 访问
+1. 导出一个 pod.yaml
+2. 参考官方文档创建 service
+
+### 任意名称创建 deployment 和 service ，然后使用 busybox 容器 nslookup 解析 service
+ 1. 导出 deployment.yaml 和创建 service.yaml 并部署
+ 2. 导出 busybox.yaml 并部署
+ 3. 进入 busybox pod 使用 nslookup 解析 service-name
+
+ ### 列出命名空间下某个 service 关联的所有 pod ，并将 pod 名称写到 /opt/pod.txt 文件中（使用标签筛选）
+ 1. 查看 service 对应的标签
+    ```
+    kubectl get svc -o wide 
+    ```
+ 2. 查看并导出对应标签的 pod
+    ```
+    kubectl get pod -l [label-name] > /opt/pod.txt
+    ```
