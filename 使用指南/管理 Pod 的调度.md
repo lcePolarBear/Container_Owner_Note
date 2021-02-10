@@ -155,3 +155,22 @@ spec:
     image: nginx
 ```
 - Pod 在使用 nodeName 时会跳过调度器，所以污点啥的都不会对此分配起作用
+
+__设置成 node 不能调度__
+- 标记一个节点为不可调度
+    ```bash
+    kubectl cordon k8s-node2
+    ```
+    ```bash
+    # kubectl get node
+    NAME        STATUS
+    k8s-node2   Ready,SchedulingDisabled
+    ```
+- 使用 kubectl drain 从服务中删除一个节点 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/safely-drain-node/#use-kubectl-drain-to-remove-a-node-from-service)_
+    ```
+    kubectl drain k8s-node2 --ignore-daemonsets
+    ```
+- 恢复节点
+    ```
+    kubectl uncordon k8s-node2
+    ```
