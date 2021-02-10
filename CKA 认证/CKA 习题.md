@@ -127,3 +127,12 @@
     ```
     kubectl get pod -l [label-name] > /opt/pod.txt
     ```
+
+### 创建一个 secret ，并创建 2 个 pod ， pod1 挂载该 secret ，路径为 /etc/foo ， pod2 使用环境变量引用该 secret ，该变量的环境变量名为 ABC
+1. 创建一个 Secret _[官方链接](https://kubernetes.io/zh/docs/concepts/configuration/secret/#%E6%A1%88%E4%BE%8B-%E4%BB%A5%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E5%BD%A2%E5%BC%8F%E4%BD%BF%E7%94%A8-secret)_
+2. pod1 使用卷挂载 Secrets _[官方链接](https://kubernetes.io/zh/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)_
+3. pod2 使用环境变量引用 Secrets _[官方链接](https://kubernetes.io/zh/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)_
+
+### 创建一个 Pod 使用 PV 自动供给
+1. 创建 PVC _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-persistentvolumeclaim)_
+2. 创建使用 PVC 分配存储的 Pod _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-pod)_
