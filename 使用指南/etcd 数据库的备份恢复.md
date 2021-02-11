@@ -1,7 +1,9 @@
 ## etcd 数据库的备份恢复
 
 安装 etcdctl
+```
 yum install etcd
+```
 
 __kubeadm 部署 etcd 的备份恢复__
 - 备份命令示例
@@ -29,6 +31,5 @@ __kubeadm 部署 etcd 的备份恢复__
         ```
         mv /etc/kubernetes/manifests.bak /etc/kubernetes/manifests
         ```
-
 
 __二进制部署 etcd 的备份恢复__
