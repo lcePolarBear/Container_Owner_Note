@@ -3,7 +3,7 @@
 2. [导出 kubeadm.config 使用 kubeadm init --config 部署 master](https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-config/#cmd-config-print-init-defaults)
 3. [master 导入 admin.config 变量](https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#%E6%9B%B4%E5%A4%9A%E4%BF%A1%E6%81%AF)
 4. kubeadm join 添加 worker 节点
-5. [部署 calico](https://docs.projectcalico.org/manifests/calico.yaml)
+5. 部署 calico _[官方链接](https://docs.projectcalico.org/getting-started/kubernetes/minikube)_
 
 ### 新建命名空间，在该命名空间中创建一个pod
 1. 创建命名空间
@@ -136,3 +136,59 @@
 ### 创建一个 Pod 使用 PV 自动供给
 1. 创建 PVC _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-persistentvolumeclaim)_
 2. 创建使用 PVC 分配存储的 Pod _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-pod)_
+
+### 创建一个 pod 并挂载数据卷，不可以用持久卷
+- 使用官方示例部署 pod _[官方链接](https://kubernetes.io/zh/docs/concepts/storage/volumes/#emptydir-%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B)_
+
+### 将 pv 按照名称、容量排序，并保存到 /opt/pv 文件
+1. 查看 PV 的 yaml 结构 _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-persistentvolume)_
+2. 使用 --sort-by 排序
+    ```
+    kubectl get pv --sort-by=.metadata.name >> /opt/pv kubectl get pv --sort-by=.spec.capacity.storage >> /opt/pv
+    ```
+
+### Bootstrap Token 方式增加一台 Node （二进制）
+
+### etcd 数据库备份与恢复 (kubeadm)
+1. etcdctl 备份的官方示例 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/configure-upgrade-etcd/)_
+    - 不需要指定 `--endpoints` 必须加入密钥的参数才能执行，可以使用 `-h` 查看
+2. 先暂停 kube-apiserver 和 etcd 容器
+    - kube-apiserver 所在路径 : /etc/kubernetes/manifests/
+    - etcd 所在路径 : /var/lib/etcd/
+3. 用 -h 查看恢复命令以及指定 etcd 路径
+
+### 给定一个 Kubernetes 集群，排查管理节点组件存在问题
+1. 查看组件状态
+    ```
+    kubectl get cs
+    ```
+2. 使用 `systemctl` 管理组件
+
+### 解决工作节点 NotReady 状态
+1. 查看 CNI 网络是否正常
+2. 查看工作节点的 kubelet 是否正常工作
+
+### 升级管理节点 kubelet ， kubectl 组件由1.18 升级为 1.19 ，工作节点不升级
+- 升级工作节点 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#%E5%8D%87%E7%BA%A7%E5%B7%A5%E4%BD%9C%E8%8A%82%E7%82%B9)_
+
+### 创建一个 ingress
+- 创建 ingress 资源 _[官方链接](https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#the-ingress-resource)_
+
+### Pod 创建一个边车容器读取业务容器日志
+- 参考官方示例 _[官方链接](https://kubernetes.io/zh/docs/concepts/cluster-administration/logging/#%E4%BD%BF%E7%94%A8-sidecar-%E5%AE%B9%E5%99%A8%E5%92%8C%E6%97%A5%E5%BF%97%E4%BB%A3%E7%90%86)_
+
+### 创建一个 clusterrole ，关联到一个服务账号
+1. 参考官方示例创建 `ServiceAccount` _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-service-account/#%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E7%9A%84%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7%E8%AE%BF%E9%97%AE-api-%E6%9C%8D%E5%8A%A1%E5%99%A8)_
+2. 参考官方示例创建 `ClusterRoleBinding` _[官方链接](https://kubernetes.io/zh/docs/reference/access-authn-authz/rbac/#clusterrolebinding-example)_
+    - 删除 subjects 标签
+
+### default 命名空间下所有 pod 可以互相访问，也可以访问其他命名空间 Pod ，但其他命名空间不能访问 default 命名空间 Pod
+- 参考官方 NetworkPolicy 模板 _[官方链接](https://kubernetes.io/zh/docs/concepts/services-networking/network-policies/#networkpolicy-resource)_
+- 题例分析
+    1. NetworkPolicy 默认 namespace 为 defalut 所以无需额外指定
+    2. 题目没有对出站流量做限制所以不需要设置 egress
+    3. 因为要阻止其他命名空间 pod 对 default 命名空间 pod 的访问所以需要设置 ingress
+    4. 如果不对 ingress 做白名单设置那么同为 defalut 命名空间的 pod 也无法实现相互访问，所以要对 ingress 增加 from.podSelector 白名单
+
+### Bootstrap Token 方式增加一台 Node （二进制）
+ 
