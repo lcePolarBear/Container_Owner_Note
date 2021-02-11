@@ -169,8 +169,15 @@ spec:
           run: client1
     ports:    # ports 是可以访问的端口
     - protocol: TCP
-    port: 80
+      port: 80
 ```
+- `podSelector` : 表示对该策略所适用的一组 Pod 进行选择，为空则选择名字空间下的所有 Pod
+- `policyTypes` : 如果未指定 policyTypes 则默认情况下始终设置 Ingress
+    - `Ingress` : 控制所选 Pod 的入站流量，如果添加但不指定（白名单）则 podSelector 不允许被访问
+        - `from` : 
+    - `Egress` : 控制所选 Pod 的出站流量，如果添加但不指定（白名单）则 podSelector 不允许访问别的 Pod
+        - `to` : 
+
 __示例：default 命名空间下所有 pod 可以互相访问，也可以访问其他命名空间 Pod ，但其他命名空间不能访问 default 命名空间 Pod__
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -179,10 +186,10 @@ metadata:
   name: deny-from-other-namespaces
   namespace: default
 spec:
-  podSelector: {}   # 如果未配置，默认所有 Pod
+  podSelector: {}   # 未配置，默认选择所有 Pod
   policyTypes:
   - Ingress
   ingress:
   - from:
-    - podSelector: {}   # 如果未配置，默认不允许
+    - podSelector: {}   # 未配置，默认不允许 podSelector 被别的 Pod 访问
 ```
