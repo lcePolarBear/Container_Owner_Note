@@ -12,7 +12,7 @@ __部署所需要的执行文件、证书和 token__
 __部署配置文件__
 - 将 kube-apiserver , kube-controller-manager , kube-scheduler 所需的配置文件放在 /opt/kubernetes/cfg/ 路径下
 - `kube-apiserver.conf`
-    ```
+    ```yaml
     KUBE_APISERVER_OPTS="--logtostderr=false \
     --v=2 \
     --log-dir=/opt/kubernetes/logs \
@@ -42,7 +42,7 @@ __部署配置文件__
     --audit-log-path=/opt/kubernetes/logs/k8s-audit.log"
     ```
 - `kube-controller-manager.conf`
-    ```
+    ```yaml
     KUBE_CONTROLLER_MANAGER_OPTS="--logtostderr=false \
     --v=2 \
     --log-dir=/opt/kubernetes/logs \
@@ -59,7 +59,7 @@ __部署配置文件__
     --experimental-cluster-signing-duration=87600h0m0s" 
     ```
 - `kube-scheduler.conf`
-    ```
+    ```yaml
     KUBE_SCHEDULER_OPTS="--logtostderr=false \
     --v=2 \
     --log-dir=/opt/kubernetes/logs \

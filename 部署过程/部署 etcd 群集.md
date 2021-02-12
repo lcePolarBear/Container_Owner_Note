@@ -14,7 +14,7 @@ __部署所需要的执行文件、证书__
 __配置 etcd 配置文件__
 - 将 etcd 所需的配置文件放入 /opt/etcd/cfg/ 下
 - `etcd.conf`
-    ```
+    ```conf
     #[Member]
     ETCD_NAME="etcd-1"
     ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
@@ -44,7 +44,7 @@ __检查群集状态__
 
 - 等到 master 和 node 都正确部署完 etcd 可检查群集健康状态
 - 执行以下命令
-    ```
+    ```bash
     /opt/etcd/bin/etcdctl \
     --ca-file=/opt/etcd/ssl/ca.pem --cert-file=/opt/etcd/ssl/server.pem --key-file=/opt/etcd/ssl/server-key.pem \
     --endpoints="https://192.168.1.11:2379,https://192.168.1.12:2379,https://192.168.1.13:2379" \

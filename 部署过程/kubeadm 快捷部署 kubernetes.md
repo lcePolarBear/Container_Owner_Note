@@ -40,7 +40,7 @@ __部署Kubernetes Master__
     - --service-cidr 集群内部虚拟网络， Pod 统一访问入口
     - --pod-network-cidr Pod 网络，与下面部署的CNI网络组件 yaml 中保持一致
     - 或者使用配置文件引导
-        ```bash
+        ```yaml
         # vi kubeadm.conf
         apiVersion: kubeadm.k8s.io/v1beta2
         kind: ClusterConfiguration

@@ -14,7 +14,7 @@ __Node 需要生成的证书__
 
 __手动生成 kubernetes 证书__
 - k8s 证书的生成与 etcd 是非常类似的，先创建文件 `ca-csr.json`
-    ```
+    ```json
     {
         "CN": "kubernetes",
         "key": {
@@ -33,11 +33,11 @@ __手动生成 kubernetes 证书__
     }
     ```
 - 使用 cfssl 命令创建证书： ca.csr , ca-key.pem , ca.pem
-    ```
+    ```bash
     cfssl gencert -initca ca-csr.json | cfssljson -bare ca -
     ```
 - 创建 `ca-config.json` 文件
-    ```
+    ```json
     {
       "signing": {
         "default": {
@@ -58,7 +58,7 @@ __手动生成 kubernetes 证书__
     }
     ```
 - 创建 `server-csr.json` 文件
-    ```
+    ```json
     {
         "CN": "kubernetes",
         "hosts": [
@@ -95,7 +95,7 @@ __手动生成 kubernetes 证书__
     cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | cfssljson -bare server
     ```
 - 创建 `kube-proxy-csr.json` 文件
-    ```
+    ```json
     {
       "CN": "system:kube-proxy",
       "hosts": [],
@@ -115,7 +115,7 @@ __手动生成 kubernetes 证书__
     }
     ```
 - 执行命令创建证书: kube-proxy.csr , kube-proxy-key.pem , kube-proxy.pem
-    ```
+    ```bash
     cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kube-proxy-csr.json | cfssljson -bare kube-proxy
     ```
 

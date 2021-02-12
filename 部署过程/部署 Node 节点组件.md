@@ -8,13 +8,13 @@ mkdir -p /opt/kubernetes/{bin,cfg,logs,ssl}
 ```
 
 __部署所需要的执行文件、证书__
-- 将已获取 kubernetes 组件中的 __kubelet , kube-proxy__ 放入 /opt/kubernetes/bin/ 路径下
+- 将已获取 kubernetes 组件中的 kubelet , kube-proxy 放入 /opt/kubernetes/bin/ 路径下
 - 将 Node 需要的证书放入 /opt/kubernetes/ssl 路径下
 
 __部署配置文件__
 - 将 kubelet , kube-proxy 所需的配置文件放在 /opt/kubernetes/cfg/ 路径下
 - `bootstrap.kubeconfig`
-    ```
+    ```yaml
     apiVersion: v1
     clusters:
     - cluster:
@@ -36,7 +36,7 @@ __部署配置文件__
     ```
     - 这里记录了 master 所使用的 token 值
 - `kubelet.conf`
-    ```
+    ```bash
     KUBELET_OPTS="--logtostderr=false \
     --v=2 \
     --log-dir=/opt/kubernetes/logs \
@@ -50,7 +50,7 @@ __部署配置文件__
     ```
     - hostname-override 要填写当前 node 所在机器的 hostname
 - `kubelet-config.yml`
-    ```
+    ```yaml
     kind: KubeletConfiguration
     apiVersion: kubelet.config.k8s.io/v1beta1
     address: 0.0.0.0
@@ -83,14 +83,14 @@ __部署配置文件__
     maxPods: 110
     ```
 - `kube-proxy.conf`
-    ```
+    ```bash
     KUBE_PROXY_OPTS="--logtostderr=false \
     --v=2 \
     --log-dir=/opt/kubernetes/logs \
     --config=/opt/kubernetes/cfg/kube-proxy-config.yml"
     ```
 - `kube-proxy-config.yml`
-    ```
+    ```yaml
     kind: KubeProxyConfiguration
     apiVersion: kubeproxy.config.k8s.io/v1alpha1
     address: 0.0.0.0
@@ -107,7 +107,7 @@ __部署配置文件__
     ```
     - hostnameOverride 要填写当前 node 所在机器的 hostname
 - `kube-proxy.kubeconfig`
-    ```
+    ```yaml
     apiVersion: v1
     clusters:
     - cluster:
@@ -131,7 +131,7 @@ __部署配置文件__
 
 __在 Master 上将 kubelet-bootstrap 用户绑定到系统群集角色__
 - node 节点上的 kubelet-bootstrap 并没有权限创建证书。所以要在 master 上创建这个用户的权限并绑定到这个角色上 
-    ```
+    ```bash
     kubectl create clusterrolebinding kubelet-bootstrap \
     --clusterrole=system:node-bootstrapper \
     --user=kubelet-bootstrap
@@ -140,7 +140,7 @@ __在 Master 上将 kubelet-bootstrap 用户绑定到系统群集角色__
 __将 kubelet , kube-proxy 作为 service 使用 systemctl 来管理__
 - 将文件 [kubelet.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kubelet.service) , [kube-proxy.service](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/kube-proxy.service) 放入 /usr/lib/systemd/system/ 路径下
 - 更新 service 并启动 kubelet , kube-proxy
-    ```
+    ```bash
     systemctl daemon-reload -a
     systemctl start kubelet kube-proxy
     ```
@@ -166,7 +166,7 @@ __查看 node 因注册生成的证书和配置文件__
     - kubelet.crt
     - kubelet.key
 - 在 /opt/kubernetes/cfg/ 路径下生成 kubelet.kubeconfig 配置文件
-    ```
+    ```yaml
     apiVersion: v1
     clusters:
     - cluster:
