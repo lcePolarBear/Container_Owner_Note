@@ -6,7 +6,8 @@ __[kubernetes 体系概览](https://github.com/lcePolarBear/Kubernetes_Basic_Con
 __部署过程__
 - [系统初始化](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96.md)
 - [kubeadm 部署 Kubernetes](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/kubeadm%20%E5%BF%AB%E6%8D%B7%E9%83%A8%E7%BD%B2%20kubernetes.md)
-- [kubeadm 对 K8s 集群进行版本升级](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/kubeadm%20%E5%AF%B9%20K8s%20%E9%9B%86%E7%BE%A4%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7.md)
+    - [kubeadm 对 K8s 集群进行版本升级](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/kubeadm%20%E5%AF%B9%20K8s%20%E9%9B%86%E7%BE%A4%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E5%8D%87%E7%BA%A7.md)
+    - [Ubuntu 18.04 以 kubeadm 的方式部署 K8s](https://mp.weixin.qq.com/s?__biz=MzI1MzcxMzIwNA==&mid=2247483876&idx=1&sn=1e8781b8861820e30064ff8f5d93392b&chksm=e9d10fbfdea686a92752f06ed71818f19015c1a48d493b3be77f63876baa1ff723fe9be834c2&mpshare=1&scene=1&srcid=0111QCE9fOtmCZgzVVmPjqYo&sharer_sharetime=1613099569670&sharer_shareid=e5ca94adfe157df8104a54ba6d65c424&exportkey=ATauXlMtxwS2m427ZNsKQXY%3D&pass_ticket=CGlMkWg%2BMmtcFtixTQVMeCNStj0Dl5Zmb9817RklUHINmeFZ%2FEvDGEwMEsnMH87%2F&wx_header=0#rd)
 - 二进制部署 Kubernetes
     1. [部署 etcd 存储](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/部署过程/部署%20etcd%20群集.md)
     2. [准备 Token 和 Kubernetes 证书](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/%E5%87%86%E5%A4%87%20Token%20%E5%92%8C%20kubernetes%20%E8%AF%81%E4%B9%A6.md)
