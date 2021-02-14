@@ -84,21 +84,13 @@
 - 使用 DaemonSet 部署镜像 _[官方链接](https://kubernetes.io/zh/docs/concepts/workloads/controllers/daemonset/#%E5%88%9B%E5%BB%BA-daemonset)_
 
 ### 查看集群中状态为 ready 的 node 数量，不包含被打了 NodeSchedule 污点的节点，并将结果写到 /opt/node.txt
-1. 列出所有状态为 Ready 的节点名称
+1. 查看所有节点的污点信息
     ```bash
-    kubectl get node | grep Ready | awk '{print $1}'
+    kubectl describe node | grep Taint
     ```
-2. 查看 k8s-node1 节点的污点信息
+2. 将污点信息不包含 NoSchedule 字符串的行进行计数
     ```bash
-    kubectl describe node k8s-node1 | grep Taint
-    ```
-3. 查看所有节点的污点信息
-    ```bash
-    kubectl describe node $(kubectl get node | grep Ready | awk '{print $1}') | grep Taint
-    ```
-4. 将污点信息不包含 NoSchedule 字符串的行进行计数
-    ```bash
-    kubectl describe node $(kubectl get node | grep Ready | awk '{print $1}') | grep Taint | grep -vc NoSchedule
+    kubectl describe node | grep Taint | grep -vc NoSchedule
     # -v 选择不包含 NoSchedule 字符串的行
     # -c 将选择出来的行进行计数
     ```
