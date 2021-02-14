@@ -24,12 +24,9 @@
     kubectl get pod -n chen
     ```
 
-### 创建一个 deployment 并暴露 Service
-1. 导出 deployment.yaml
-    ```bash
-    kubectl create deployment my-dep --image=nginx --dry-run=client -o yaml > deployment.yaml
-    ```
-2. 参考官方文档创建 service _[官方文档](https://kubernetes.io/zh/docs/concepts/services-networking/service/#%E5%AE%9A%E4%B9%89-service)_
+### 重新配置已存在的 deployment front-end ，对其已存在的 nginx 容器添加名为 http 的暴露端口 80/tcp 。创建名为 front-end-svc 的 Service 用于暴露名为 http 的容器端口。通过调度节点上的 NodePort 暴露各个 Pod
+1. 根据 deployment 示例使用 kubectl edit 命令添加名为 http 的暴露端口 _[官方文档](https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/#creating-a-deployment)_
+2. 参考官方文档创建 service 并添加服务发现 NodePort _[官方文档](https://kubernetes.io/zh/docs/concepts/services-networking/service/#%E5%AE%9A%E4%B9%89-service)_
 3. 创建 deployment 和 service
 
 ###  列出命名空间下指定标签 pod
@@ -105,9 +102,10 @@
     # -v 选择不包含 NoSchedule 字符串的行
     # -c 将选择出来的行进行计数
     ```
-### 设置成 node 不能调度，并使已被调度的 pod 重新调度
+### 将 node 设置为不可用并且驱逐已部署在此节点上所有的 pod
 1. 设置节点为不可调度 : kubectl cordon
 2. 驱除节点上的 pod : kubectl drain
+    - drain 在执行之前默认执行 cordon
 
 ### 给一个 pod 创建 service ，并可以通过 ClusterIP 访问
 1. 导出一个 pod.yaml
@@ -147,11 +145,9 @@
     kubectl get pv --sort-by=.metadata.name >> /opt/pv kubectl get pv --sort-by=.spec.capacity.storage >> /opt/pv
     ```
 
-### Bootstrap Token 方式增加一台 Node （二进制）
-
 ### etcd 数据库备份与恢复 (kubeadm)
 1. etcdctl 备份的官方示例 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/configure-upgrade-etcd/)_
-    - 不需要指定 `--endpoints` 必须加入密钥的参数才能执行，可以使用 `-h` 查看
+    - 必须加入密钥的参数才能执行，可以使用 `-h` 查看
 2. 先暂停 kube-apiserver 和 etcd 容器
     - kube-apiserver 所在路径 : /etc/kubernetes/manifests/
     - etcd 所在路径 : /var/lib/etcd/
@@ -168,8 +164,8 @@
 1. 查看 CNI 网络是否正常
 2. 查看工作节点的 kubelet 是否正常工作
 
-### 升级管理节点 kubelet ， kubectl 组件由1.18 升级为 1.19 ，工作节点不升级
-- 升级工作节点 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#%E5%8D%87%E7%BA%A7%E5%B7%A5%E4%BD%9C%E8%8A%82%E7%82%B9)_
+### 升级 master 节点的 kubeadm , kubelet , kubectl 组件。由1.20 升级为 1.20.1 。不要升级 work 节点
+- 升级控制平面节点 _[官方链接](https://kubernetes.io/zh/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/#%E5%8D%87%E7%BA%A7%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2%E8%8A%82%E7%82%B9)_
 
 ### 创建一个 ingress
 - 创建 ingress 资源 _[官方链接](https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#the-ingress-resource)_
@@ -177,18 +173,20 @@
 ### Pod 创建一个边车容器读取业务容器日志
 - 参考官方示例 _[官方链接](https://kubernetes.io/zh/docs/concepts/cluster-administration/logging/#%E4%BD%BF%E7%94%A8-sidecar-%E5%AE%B9%E5%99%A8%E5%92%8C%E6%97%A5%E5%BF%97%E4%BB%A3%E7%90%86)_
 
-### 创建一个 clusterrole ，关联到一个服务账号
-1. 参考官方示例创建 `ServiceAccount` _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-service-account/#%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E7%9A%84%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7%E8%AE%BF%E9%97%AE-api-%E6%9C%8D%E5%8A%A1%E5%99%A8)_
-2. 参考官方示例创建 `ClusterRoleBinding` _[官方链接](https://kubernetes.io/zh/docs/reference/access-authn-authz/rbac/#clusterrolebinding-example)_
-    - 删除 subjects 标签
+### 在指定命名空间下创建一个 ClusterRole ，关联到一个 ServiceAccount
+1. 创建指定命名空间
+2. 创建 `ServiceAccount` _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-service-account/#%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E7%9A%84%E6%9C%8D%E5%8A%A1%E8%B4%A6%E6%88%B7%E8%AE%BF%E9%97%AE-api-%E6%9C%8D%E5%8A%A1%E5%99%A8)_
+3. 创建 `ClusterRole` _[官方链接](https://kubernetes.io/zh/docs/reference/access-authn-authz/rbac/#clusterrole-%E7%A4%BA%E4%BE%8B)_
+4. 因为题目指定在特定命名空间下进行绑定，所以创建 `RoleBinding` 而不是 `ClusterRoleBinding` _[官方链接](https://kubernetes.io/zh/docs/reference/access-authn-authz/rbac/#clusterrolebinding-example)_
 
-### default 命名空间下所有 pod 可以互相访问，也可以访问其他命名空间 Pod ，但其他命名空间不能访问 default 命名空间 Pod
+### 在 internal 命名空间下创建一个 NetworkPolicy ，此命名空间下所有的 pod 只能通过 9000 端口相互访问
 - 参考官方 NetworkPolicy 模板 _[官方链接](https://kubernetes.io/zh/docs/concepts/services-networking/network-policies/#networkpolicy-resource)_
 - 题例分析
-    1. NetworkPolicy 默认 namespace 为 defalut 所以无需额外指定
+    1. 为 NetworkPolicy 指定 internal 命名空间
     2. 题目没有对出站流量做限制所以不需要设置 egress
     3. 因为要阻止其他命名空间 pod 对 default 命名空间 pod 的访问所以需要设置 ingress
-    4. 如果不对 ingress 做白名单设置那么同为 defalut 命名空间的 pod 也无法实现相互访问，所以要对 ingress 增加 from.podSelector 白名单
+    4. 如果不对 ingress 做白名单设置那么同为 internal 命名空间的 pod 也无法实现相互访问，所以要对 ingress 增加 from.podSelector
+    5. 因为只能通过 9000 端口访问所以添加 ingress.port
 
 ### Bootstrap Token 方式增加一台 Node （二进制）
- 
+- [参考文档](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E9%83%A8%E7%BD%B2%E8%BF%87%E7%A8%8B/Bootstrap%20Token%20%E6%96%B9%E5%BC%8F%E5%A2%9E%E5%8A%A0%20Node.md)
