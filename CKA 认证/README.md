@@ -37,8 +37,10 @@
     # -l 表示指定标签
     ```
 
-### 查看 pod 日志，并将日志中 Error 的行记录到指定文件
-- 使用 kubectl logs 导出 pod 的日志后 使用 |grep error 过滤并导出内容
+### 监控名为 foobar 的 Pod 日志，并将日志中指定的的错误记录 unable-to-access-website 写入指定文件
+```bash
+kubectl log foobar | grep unable-to-access-website >> /opt/KUTR00101/foobar
+```
 
 ### 查看指定标签使用 cpu 最高的 pod 并记录到到指定文件
 1. 考试环境的 K8S 应该部署了 Metrics
@@ -123,7 +125,10 @@
 2. pod1 使用卷挂载 Secrets _[官方链接](https://kubernetes.io/zh/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)_
 3. pod2 使用环境变量引用 Secrets _[官方链接](https://kubernetes.io/zh/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)_
 
-### 创建一个 Pod 使用 PV 自动供给
+### 创建一个基于 hostPath 分配存储的 PersistentVolume
+- 创建 PV _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-persistentvolume)_
+
+### 创建一个 PersistentVolumeClaim 和一个 Pod ，将 Pod 以 ReadWriteOnce 挂载到 PersistentVolumeClaim
 1. 创建 PVC _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-persistentvolumeclaim)_
 2. 创建使用 PVC 分配存储的 Pod _[官方链接](https://kubernetes.io/zh/docs/tasks/configure-pod-container/configure-persistent-volume-storage/#%E5%88%9B%E5%BB%BA-pod)_
 
