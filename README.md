@@ -33,6 +33,8 @@ __使用指南__
 - [etcd 数据库的备份恢复](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/etcd%20%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D.md)
 
 __项目部署案例__
+- [部署 WordPress](http://www.showerlee.com/archives/2336)
+- []()
 
 
 __[CKA 题目](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/CKA%20%E8%AE%A4%E8%AF%81/README.md)__
