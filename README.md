@@ -34,7 +34,7 @@ __使用指南__
 
 __项目部署案例__
 - [部署 WordPress](http://www.showerlee.com/archives/2336)
-- []()
+- [部署 Jenkins]()
 
 
 __[CKA 题目](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/CKA%20%E8%AE%A4%E8%AF%81/README.md)__
