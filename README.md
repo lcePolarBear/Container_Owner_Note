@@ -35,6 +35,6 @@ __使用指南__
 __项目部署案例__
 - [部署 WordPress](http://www.showerlee.com/archives/2336)
 - [部署 Jenkins](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/tree/master/%E9%A1%B9%E7%9B%AE%E6%A1%88%E4%BE%8B/%E9%83%A8%E7%BD%B2%20Jenkins)
-
+- [已有状态方式部署 kafka](https://blog.csdn.net/miss1181248983/article/details/106720732)
 
 __[CKA 题目](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/CKA%20%E8%AE%A4%E8%AF%81/README.md)__
