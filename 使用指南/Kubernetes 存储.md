@@ -194,8 +194,9 @@ __PV 和 PVC 的匹配机制__
 - 访问模式也作为匹配的依据
 
 __使用 [StorageClass 对象](https://v1-19.docs.kubernetes.io/zh/docs/concepts/storage/storage-classes/)实现 PV 动态供给__
+> [官方链接](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/tree/master/deploy)
 - 通过 StorageClass pvc 不需要由 pv 申请资源，而是由 StorageClass 去分配
-- 创建存储类 : [rbac.yaml](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/nfs-client/class.yaml) ，查看存储类
+- 创建存储类 : [class.yaml](https://github.com/lcePolarBear/Kubernetes_Basic_Config_Note/blob/master/%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%96%87%E4%BB%B6/nfs-client/class.yaml) ，查看存储类
     ```
     kubectl get sc
     ```
