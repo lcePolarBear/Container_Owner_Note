@@ -174,137 +174,299 @@ done
         service-url:
         defaultZone: http://eureka-0.eureka.ms:8888/eureka,http://eureka-1.eureka.ms:8888/eureka,http://eureka-2.eureka.ms:8888/eureka
     ```
-### 第六步：部署业务处理微服务
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: product
-  namespace: ms
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      project: ms
-      app: product
-  template:
+### 第六步：部署微服务
+- 业务处理微服务
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
     metadata:
-      labels:
+    name: product
+    namespace: ms
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
         project: ms
         app: product
-    spec:
-      imagePullSecrets:
-      - name: registry-pull-secret
-      containers:
-      - name: product
-        image: 192.168.102.211/microservice/product:2021-11-30-20-38-32
-        imagePullPolicy: Always
-        ports:
-          - protocol: TCP
-            containerPort: 8010
-        resources:
-          requests:
-            cpu: 0.5
-            memory: 256Mi
-          limits:
-            cpu: 1
-            memory: 1Gi
-        readinessProbe:
-          tcpSocket:
-            port: 8010
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 8010
-          initialDelaySeconds: 60
-          periodSeconds: 10
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: order
-  namespace: ms
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      project: ms
-      app: order
-  template:
+    template:
+        metadata:
+        labels:
+            project: ms
+            app: product
+        spec:
+        imagePullSecrets:
+        - name: registry-pull-secret
+        containers:
+        - name: product
+            image: 192.168.102.211/microservice/product:2021-11-30-20-38-32
+            imagePullPolicy: Always
+            ports:
+            - protocol: TCP
+                containerPort: 8010
+            resources:
+            requests:
+                cpu: 0.5
+                memory: 256Mi
+            limits:
+                cpu: 1
+                memory: 1Gi
+            readinessProbe:
+            tcpSocket:
+                port: 8010
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            livenessProbe:
+            tcpSocket:
+                port: 8010
+            initialDelaySeconds: 60
+            periodSeconds: 10
+    ```
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
     metadata:
-      labels:
+    name: order
+    namespace: ms
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
         project: ms
         app: order
-    spec:
-      imagePullSecrets:
-      - name: registry-pull-secret
-      containers:
-      - name: order
-        image: 192.168.102.211/microservice/order:2021-11-30-20-38-03
-        imagePullPolicy: Always
-        ports:
-          - protocol: TCP
-            containerPort: 8020
-        resources:
-          requests:
-            cpu: 0.5
-            memory: 256Mi
-          limits:
-            cpu: 1
-            memory: 1Gi
-        readinessProbe:
-          tcpSocket:
-            port: 8020
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 8020
-          initialDelaySeconds: 60
-          periodSeconds: 10
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: stock
-  namespace: ms
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      project: ms
-      app: stock
-  template:
+    template:
+        metadata:
+        labels:
+            project: ms
+            app: order
+        spec:
+        imagePullSecrets:
+        - name: registry-pull-secret
+        containers:
+        - name: order
+            image: 192.168.102.211/microservice/order:2021-11-30-20-38-03
+            imagePullPolicy: Always
+            ports:
+            - protocol: TCP
+                containerPort: 8020
+            resources:
+            requests:
+                cpu: 0.5
+                memory: 256Mi
+            limits:
+                cpu: 1
+                memory: 1Gi
+            readinessProbe:
+            tcpSocket:
+                port: 8020
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            livenessProbe:
+            tcpSocket:
+                port: 8020
+            initialDelaySeconds: 60
+            periodSeconds: 10
+    ```
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
     metadata:
-      labels:
+    name: stock
+    namespace: ms
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
         project: ms
         app: stock
+    template:
+        metadata:
+        labels:
+            project: ms
+            app: stock
+        spec:
+        imagePullSecrets:
+        - name: registry-pull-secret
+        containers:
+        - name: stock
+            image: 192.168.102.211/microservice/stock:2021-11-30-20-39-04
+            imagePullPolicy: Always
+            ports:
+            - protocol: TCP
+                containerPort: 8030
+            resources:
+            requests:
+                cpu: 0.5
+                memory: 256Mi
+            limits:
+                cpu: 1
+                memory: 1Gi
+            readinessProbe:
+            tcpSocket:
+                port: 8030
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            livenessProbe:
+            tcpSocket:
+                port: 8030
+            initialDelaySeconds: 60
+            periodSeconds: 10
+    ```
+- 网关微服务
+    ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: gateway
+    namespace: ms
     spec:
-      imagePullSecrets:
-      - name: registry-pull-secret
-      containers:
-      - name: stock
-        image: 192.168.102.211/microservice/stock:2021-11-30-20-39-04
-        imagePullPolicy: Always
-        ports:
-          - protocol: TCP
-            containerPort: 8030
-        resources:
-          requests:
-            cpu: 0.5
-            memory: 256Mi
-          limits:
-            cpu: 1
-            memory: 1Gi
-        readinessProbe:
-          tcpSocket:
-            port: 8030
-          initialDelaySeconds: 60
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 8030
-          initialDelaySeconds: 60
-          periodSeconds: 10
+    rules:
+        - host: gateway.ctnrs.com
+        http:
+            paths:
+            - path: /
+            pathType: Prefix
+            backend:
+                service:
+                name: gateway
+                port:
+                    number: 9999
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: gateway
+    namespace: ms
+    spec:
+    ports:
+    - port: 9999
+        name: gateway
+    selector:
+        project: ms
+        app: gateway
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: gateway
+    namespace: ms
+    spec:
+    replicas: 1
+    selector:
+        matchLabels:
+        project: ms
+        app: gateway
+    template:
+        metadata:
+        labels:
+            project: ms
+            app: gateway
+        spec:
+        imagePullSecrets:
+        - name: registry-pull-secret
+        containers:
+        - name: gateway
+            image: 192.168.102.211/microservice/gateway:2021-12-01-19-12-33
+            imagePullPolicy: Always
+            ports:
+            - protocol: TCP
+                containerPort: 9999
+            resources:
+            requests:
+                cpu: 0.5
+                memory: 256Mi
+            limits:
+                cpu: 1
+                memory: 1Gi
+            readinessProbe:
+            tcpSocket:
+                port: 9999
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            livenessProbe:
+            tcpSocket:
+                port: 9999
+            initialDelaySeconds: 60
+            periodSeconds: 10
+    ```
+- 前端微服务
+    ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: portal
+    namespace: ms
+    spec:
+    rules:
+        - host: portal.ctnrs.com
+        http:
+            paths:
+            - path: /
+            pathType: Prefix
+            backend:
+                service:
+                name: portal
+                port:
+                    number: 8080
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: portal
+    namespace: ms
+    spec:
+    ports:
+    - port: 8080
+        name: portal
+    selector:
+        project: ms
+        app: portal
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: portal
+    namespace: ms
+    spec:
+    replicas: 2
+    selector:
+        matchLabels:
+        project: ms
+        app: portal
+    template:
+        metadata:
+        labels:
+            project: ms
+            app: portal
+        spec:
+        imagePullSecrets:
+        - name: registry-pull-secret
+        containers:
+        - name: portal
+            image: 192.168.102.211/microservice/portal:2021-11-30-19-53-07
+            imagePullPolicy: Always
+            ports:
+            - protocol: TCP
+                containerPort: 8080
+            resources:
+            requests:
+                cpu: 0.5
+                memory: 256Mi
+            limits:
+                cpu: 1
+                memory: 1Gi
+            readinessProbe:
+            tcpSocket:
+                port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            livenessProbe:
+            tcpSocket:
+                port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+    ```
+# 第七步：微服务升级与扩容
+- 使用 scale 指令扩容 deployment 资源副本
+- 按照自动化脚本的流程，修改完代码后重新打包镜像并推送，kubernetes 在部署时会自动进行蓝绿发布
+```
 ```
