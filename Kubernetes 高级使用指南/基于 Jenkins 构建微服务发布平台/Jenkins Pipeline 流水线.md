@@ -32,3 +32,32 @@ pipeline {
 比如： Build 、 Test 、 Deploy
 - Steps ： Steps 是最基本的操作单元，可以是打印一句话，也可以是构建一
 个 Docker 镜像，由各类 Jenkins 插件提供，比如命令：sh ‘mvn'，就相当于我们平时 shell 终端中执行 mvn 命令一样
+### 搭建流水线步骤
+1. 第一步
+```
+pipeline {
+    agent {
+        kubernetes {
+            label "jenkins-slave"
+            yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+    name: jenkins-slave
+spec:
+  containers:
+  - name: jnlp
+    image: 192.168.102.211/library/jenkins-slave-jdk:1.8
+'''
+        }
+    }
+    stages {
+        stage('Main') {
+            steps {
+                sh 'hostname'
+            }
+        }
+    }
+}
+```
+2. 
