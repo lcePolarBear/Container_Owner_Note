@@ -23,6 +23,28 @@
     ```
     docker run --name elasticsearch -p 9200:9200 -e "discovery.type=single-node" -d elasticsearch:7.7.0
     ```
+    - 查看 elasticsearch 数据库是否正常
+        ```bash
+        # curl -X GRT "localhost:9200"
+        {
+        "name" : "3de96d0ba640",
+        "cluster_name" : "docker-cluster",
+        "cluster_uuid" : "hmrJoCQGTNm-oqZJwFEBQg",
+        "version" : {
+            "number" : "7.7.0",
+            "build_flavor" : "default",
+            "build_type" : "docker",
+            "build_hash" : "81a1e9eda8e6183f5237786246f6dced26a10eaf",
+            "build_date" : "2020-05-12T02:01:37.602180Z",
+            "build_snapshot" : false,
+            "lucene_version" : "8.5.1",
+            "minimum_wire_compatibility_version" : "6.8.0",
+            "minimum_index_compatibility_version" : "6.0.0-beta1"
+        },
+        "tagline" : "You Know, for Search"
+        }
+        ```
+    - 确保容器内时间与宿主机时间同步，否则会发生无法读写的问题。_可参考[容器内时间同步](../../Docker%20经验总结/容器内环境配置.md)调整_
 - 部署 Skywalking OAP
     1. 下载软件包[软件下载地址](https://archive.apache.org/dist/skywalking/8.3.0/)
     2. 安装 jdk 环境并解压
