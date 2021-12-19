@@ -258,4 +258,30 @@ spec:
       version: v2
 ```
 ## 将应用暴露到互联网
+- 在实际部署中， K8s 集群一般部署在内网，为了将暴露到互联网，会在前面加一层负载均衡器（公有云 LB 产品、Nginx、LVS等），用于流量入口，将用户访问的域名传递给 IngressGateway ， IngressGateway 再转发到不同应用
 ## 可视化监控
+### 使用 Kiali 观测应用
+```bash
+# 部署
+[root@jump ~]# kubectl apply -f istio-1.8.2/samples/addons/kiali.yaml -n istio-system
+# 修改 service 的暴露服务方式为 NodePort 后访问
+```
+### 使用 Prometheus+Grafana 查看系统状态
+```bash
+# 部署
+[root@jump ~]# kubectl apply -f istio-1.8.2/samples/addons/prometheus.yaml istio-1.8.2/samples/addons/grafana.yaml -n istio-system
+# 修改 service 的暴露服务方式为 NodePort 后访问
+```
+- Istio Control Plane Dashboard：控制面板仪表盘
+- Istio Mesh Dashboard：网格仪表盘，查看应用（服务）数据
+- Istio Performance Dashboard：查看Istio 自身（各组件）数据
+- Istio Service Dashboard：服务仪表盘
+- Istio Workload Dashboard：工作负载仪表盘
+- Istio Wasm Extension Dashboard
+### 使用 Jaeger 进行链路追踪
+- Jaeger 是 Uber 开源的分布式追踪系统，用于微服务的监控和全链路追踪
+```bash
+# 部署
+[root@jump ~]# kubectl apply -f istio-1.8.2/samples/addons/jaeger.yaml -n istio-system
+# 修改 service 的暴露服务方式为 NodePort 后访问
+```
