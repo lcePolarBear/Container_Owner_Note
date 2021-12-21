@@ -1,10 +1,10 @@
 # Istio 服务网格实现微服务治理
 ## Service Mesh
-### 什么是 Service Mesh ？
+### 什么是 Service Mesh
 - 通过 Sidecar Proxy 接管容器的网络，并搭建容器间的通信网格
 ### Service Mesh 特点
 - Sidecar 实现治理能力独立
-- 应用程序胡无感知
+- 应用程序互无感知
 - 服务通信的基础设施层
 - 解耦应用程序的重试/超时、监控、追踪和服务发现
 ## Istio
@@ -12,10 +12,10 @@
 - Isito 是 Service Mesh 的产品化落地，是目前最受欢迎的服务网格，功能丰富、成熟度高
 ### Istio 架构与组件
 - 控制平面
-    1. istiod 组件负责处理 Sidecar 注入、证书分发、配置管理等功能
-    2. Pilot 策略配置组件，为 Proxy 提供服务发现、智能路由、错误处理等
-    3. Citadel 安全组件，提供证书生成下发、加密通信、访问控制
-    4. Galley 配置管理、验证、分发
+    1. istiod 组件：负责处理 Sidecar 注入、证书分发、配置管理等功能
+    2. Pilot 策略配置组件：为 Proxy 提供服务发现、智能路由、错误处理等
+    3. Citadel 安全组件：提供证书生成下发、加密通信、访问控制
+    4. Galley ：配置管理、验证、分发
 - 数据平面
     - 由一组 Proxy 组成，这些Proxy负责所有微服务网络通信，实现高效转发和策略，是Istio在数据平面唯一的组件。使用 envoy 实现。
     - envoy 是一个基于 C++ 实现的 L4/L7 Proxy 转发器
@@ -285,3 +285,6 @@ spec:
 [root@jump ~]# kubectl apply -f istio-1.8.2/samples/addons/jaeger.yaml -n istio-system
 # 修改 service 的暴露服务方式为 NodePort 后访问
 ```
+### 案例：模拟实现电商微服务灰度发布
+1. 拉取镜像
+2. 部署到 k8s
