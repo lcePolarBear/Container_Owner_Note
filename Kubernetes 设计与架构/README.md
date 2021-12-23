@@ -21,5 +21,9 @@
 1. 容器被划分为 Pod ，Pod 中容器之间共享 Network Namespace 和 Volume ，从而实现高效的信息交换。
 2. 通过 service 绑定一组 Pod 的 IP 地址提供负载均衡，对外提供统一访问接口
 3. 为了更多样化的描述 Pod 工作性质，引入了 Job 、 DeaminSet 、 CronJob 等对象的概念
+### kubernetes 的使用逻辑
+1. 首先通过一个任务编排对象描述试图管理的应用。
+2. 为应用定义拥有运维能力的对象，比如 Service 、 Ingress 、 Horizontal Pod Autoscaler 等，由这些对象来负责具体的运维能力侧功能。
+3. 那么这种使用方法就是所谓的“声明式 API ”。这种 API 对应的编排对象和服务对象，都是 Kubernetes 项目中的 API 对象，__声明式 API 是 Kubernetes 最核心的设计理念__。
 
-在 kubernetes 中
+由此我们可以看出， kubernetes 不但能够将容器按照某种规则“调度”到某个最佳节点上运行，还能还能按照用户的意愿和整个系统的规则，完全自动化“编排”好容器之间的各种关系，更重要的是， kubernetes 是一系列具有普遍意义的、以声明式 API 驱动的容器化作业编排思想和最佳实践。
