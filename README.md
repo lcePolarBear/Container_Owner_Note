@@ -12,4 +12,4 @@
 - [Ingress 配置证书](kubernetes%20集群的安全配置/Ingress%20配置证书.md)
 - [网络访问控制](kubernetes%20集群的安全配置/网络访问控制.md)
 ### [kubernetes 群集强化](Container_Owner_Note/tree/master/kubernetes%20集群强化/)
-### [kubernetes 容器运行环境安全加固](Container_Owner_Note/tree/master/Kubernetes%20容器运行环境安全加固)
+### [kubernetes 容器运行环境安全加固](Kubernetes%20容器运行环境安全加固)
