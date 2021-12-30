@@ -128,5 +128,181 @@ spec:
   - '*'
 ```
 ## Pod 安全策略（ Open Policy Agent ）
+- 是一个开源的、通用策略引擎，可以将策略编写为代码。提供一个种高级声明性语言 Rego 来编写策略，并把决策这一步骤从复杂的业务逻辑中解耦出来。
+- Gatekeeper 是基于 OPA的一个 Kubernetes 策略解决方案，可替代PSP或者部分RBAC功能。
+- 当在集群中部署了Gatekeeper组件，APIServer所有的创建、更新或者删除操作都会触发Gatekeeper来处理，如果不满足策略则拒绝。
+### 部署Gatekeeper
+[官方链接地址](https://open-policy-agent.github.io/gatekeeper/website/docs/install/#deploying-a-release-using-prebuilt-image)
+```
+kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.7/deploy/gatekeeper.yaml
+```
+Gatekeeper的策略由两个资源对象组成
+- Template：策略逻辑实现的地方，使用rego语言
+- Contsraint：负责Kubernetes资源对象的过滤或者为Template提供输入参数
+### 案例1：禁止容器启用特权
+```yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: privileged 
+spec:
+  crd:
+    spec:
+      names:
+        kind: privileged
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package admission
+        violation[{"msg": msg}] { # 如果violation为true（表达式通过）说明违反约束
+          containers = input.review.object.spec.template.spec.containers
+          c_name := containers[0].name
+          containers[0].securityContext.privileged # 如果返回true，说明违反约束
+          msg := sprintf("提示：'%v'容器禁止启用特权！",[c_name])
+        }
+
+# kubectl get ConstraintTemplate
+```
+```yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: privileged  # 指定为 ConstraintTemplate 的 metadata.name
+metadata:
+  name: privileged
+spec:
+  match: # 匹配的资源
+    kinds:
+      - apiGroups: ["apps"]
+        kinds:
+        - "Deployment"
+        - "DaemonSet"
+        - "StatefulSet"
+# kubectl get constraints
+```
+### 案例2：只允许使用特定的镜像仓库
+```yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: image-check
+spec:
+  crd:
+    spec:
+      names:
+        kind: image-check
+      validation:
+        openAPIV3Schema: 
+          properties: # 需要满足条件的参数
+            prefix:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package image
+        violation[{"msg": msg}] { 
+          containers = input.review.object.spec.template.spec.containers
+          image := containers[0].image
+          not startswith(image, input.parameters.prefix) # 镜像地址开头不匹配并取反则为true，说明违反约束
+          msg := sprintf("提示：'%v'镜像地址不在可信任仓库！", [image])
+        }
+```
+```yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: image-check
+metadata:
+  name: image-check
+spec:
+  match:
+    kinds:
+      - apiGroups: ["apps"] 
+        kinds:
+        - "Deployment"
+        - "DaemonSet"
+        - "StatefulSet"
+  parameters: # 传递给opa的参数
+    prefix: "lizhenliang/"
+
+```
 ## Secret 存储敏感数据
+Secret是一个用于存储敏感数据的资源，所有的数据要经过base64编码，数据实际会存储在K8s中Etcd，然后通过创建Pod时引用该数据。  
+Pod使用secret数据有变量注入、数据卷挂载两种方式。  
+kubectl create secret 支持三种数据类型
+- docker-registry：存储镜像仓库认证信息
+- generic：从文件、目录或者字符串创建，例如存储用户名密码
+- tls：存储证书，例如HTTPS证书
+### 示例：将Mysql用户密码保存到Secret中存储
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql
+type: Opaque
+data:
+  mysql-root-password: "MTIzNDU2"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: db
+        image: mysql:5.7.30
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: mysql-root-password
+```
 ## 安全沙箱运行容器
+- 所知，容器的应用程序可以直接访问Linux内核的系统调用，容器在安全隔离上还是比较弱，虽然内核在不断地增强自身的安全特性，但由于内核自身代码极端复杂，CVE 漏洞层出不穷。  
+- 所以要想减少这方面安全风险，就是做好安全隔离，阻断容器内程序对物理机内核的依赖。  
+- Google开源的一种gVisor容器沙箱技术就是采用这种思路，gVisor隔离容器内应用和内核之间访问，提供了大部分Linux内核的系统调用，巧妙的将容器内进程的系统调用转化为对gVisor的访问。
+
+gVisor兼容OCI，与Docker和K8s无缝集成，很方面使用。 [项目地址](https://github.com/google/gvisor
+)
+![](https://docimg3.docs.qq.com/image/FP0hIp5AM2RtGRYuR5AcpA.png?w=1253&h=504)
+gVisor 由 3 个组件构成
+- Runsc 是一种 Runtime 引擎，负责容器的创建与销毁
+- Sentry 负责容器内程序的系统调用处理
+- Gofer 负责文件系统的操作代理，IO 请求都会由它转接到 Host 上
+![](https://docimg3.docs.qq.com/image/eKeQNU8Th7ge3sw5SWGvZw.png?w=490&h=253)
+### gVisor与Docker集成
+[官方参考文档](https://gvisor.dev/docs/user_guide/install/)
+gVisor内核要求：Linux 3.17+
+如果用的是 CentOS7 则需要升级内核，Ubuntu 不需要
+```bash
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+yum --enablerepo=elrepo-kernel install kernel-ml-devel kernel-ml –y
+grub2-set-default 0
+reboot
+uname -r
+```
+1. 准备gVisor二进制文件
+    ```bash
+    sha512sum -c runsc.sha512
+    rm -f *.sha512
+    chmod a+x runsc
+    mv runsc /usr/local/bin
+    ```
+2. Docker配置使用gVisor
+```
+runsc install # 查看加的配置/etc/docker/daemon.json
+systemctl restart docker
+```
+3. 使用runsc运行容器
+```bash
+docker run -d --runtime=runsc nginx
+# 使用dmesg验证
+docker run --runtime=runsc -it nginx dmesg
+```
+[已经测试过的应用和工具](https://gvisor.dev/docs/user_guide/compatibility/)
