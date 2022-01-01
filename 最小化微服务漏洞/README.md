@@ -223,8 +223,8 @@ spec:
 
 ```
 ## Secret 存储敏感数据
-Secret是一个用于存储敏感数据的资源，所有的数据要经过base64编码，数据实际会存储在K8s中Etcd，然后通过创建Pod时引用该数据。  
-Pod使用secret数据有变量注入、数据卷挂载两种方式。  
+Secret 是一个用于存储敏感数据的资源，所有的数据要经过 base64 编码，数据实际会存储在 K8s Etcd 中，然后通过创建 Pod 时引用该数据。  
+Pod 使用 secret 数据有变量注入、数据卷挂载两种方式。  
 kubectl create secret 支持三种数据类型
 - docker-registry：存储镜像仓库认证信息
 - generic：从文件、目录或者字符串创建，例如存储用户名密码
@@ -263,11 +263,11 @@ spec:
               key: mysql-root-password
 ```
 ## 安全沙箱运行容器
-- 所知，容器的应用程序可以直接访问Linux内核的系统调用，容器在安全隔离上还是比较弱，虽然内核在不断地增强自身的安全特性，但由于内核自身代码极端复杂，CVE 漏洞层出不穷。  
+- 所知，容器的应用程序可以直接访问 Linux 内核的系统调用，容器在安全隔离上还是比较弱，虽然内核在不断地增强自身的安全特性，但由于内核自身代码极端复杂，CVE 漏洞层出不穷。  
 - 所以要想减少这方面安全风险，就是做好安全隔离，阻断容器内程序对物理机内核的依赖。  
-- Google开源的一种gVisor容器沙箱技术就是采用这种思路，gVisor隔离容器内应用和内核之间访问，提供了大部分Linux内核的系统调用，巧妙的将容器内进程的系统调用转化为对gVisor的访问。
+- Google 开源的一种 gVisor 容器沙箱技术就是采用这种思路，gVisor 隔离容器内应用和内核之间访问，提供了大部分 Linux 内核的系统调用，巧妙的将容器内进程的系统调用转化为对 gVisor 的访问。
 
-gVisor兼容OCI，与Docker和K8s无缝集成，很方面使用。 [项目地址](https://github.com/google/gvisor
+gVisor 兼容 OCI ，与 Docker 和 K8s 无缝集成，很方面使用。 [项目地址](https://github.com/google/gvisor
 )
 ![](https://docimg3.docs.qq.com/image/FP0hIp5AM2RtGRYuR5AcpA.png?w=1253&h=504)
 gVisor 由 3 个组件构成
@@ -275,10 +275,10 @@ gVisor 由 3 个组件构成
 - Sentry 负责容器内程序的系统调用处理
 - Gofer 负责文件系统的操作代理，IO 请求都会由它转接到 Host 上
 ![](https://docimg3.docs.qq.com/image/eKeQNU8Th7ge3sw5SWGvZw.png?w=490&h=253)
-### gVisor与Docker集成
-[官方参考文档](https://gvisor.dev/docs/user_guide/install/)
-gVisor内核要求：Linux 3.17+
-如果用的是 CentOS7 则需要升级内核，Ubuntu 不需要
+### gVisor 与 Docker 集成
+[官方参考文档](https://gvisor.dev/docs/user_guide/install/)  
+gVisor 内核要求：Linux 3.17+
+如果用的是 CentOS7 则需要升级内核，Ubuntu 内核一般都比较新
 ```bash
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
@@ -287,19 +287,20 @@ grub2-set-default 0
 reboot
 uname -r
 ```
-1. 准备gVisor二进制文件
+1. 准备 gVisor 二进制文件
     ```bash
     sha512sum -c runsc.sha512
     rm -f *.sha512
     chmod a+x runsc
     mv runsc /usr/local/bin
     ```
-2. Docker配置使用gVisor
+2. Docker 配置使用 gVisor
 ```
-runsc install # 查看加的配置/etc/docker/daemon.json
+runsc install
+# 查看加的配置  /etc/docker/daemon.json
 systemctl restart docker
 ```
-3. 使用runsc运行容器
+3. 使用 runsc 运行容器
 ```bash
 docker run -d --runtime=runsc nginx
 # 使用dmesg验证
