@@ -7,6 +7,8 @@
 ### [kubernetes 群集搭建与配置](Kubernetes%20群集搭建与配置)
 - [二进制搭建群集](Kubernetes%20群集搭建与配置/二进制搭建%20kubernetes)
 - [Bootstrap Token 方式增加 Node](Kubernetes%20群集搭建与配置/Bootstrap%20Token%20方式增加%20Node.md)
+### Kubernetes 编排原理
+- [Pod 对象](Kubernetes%20编排原理/Pod%20对象.md)
 ### kubernetes 群集的安全配置
 - [CIS 安全基准](kubernetes%20集群的安全配置/CIS%20安全基准.md)
 - [Ingress 配置证书](kubernetes%20集群的安全配置/Ingress%20配置证书.md)

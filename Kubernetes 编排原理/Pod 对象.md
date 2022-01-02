@@ -149,4 +149,70 @@ Pod 的 spec 中包含一个 restartPolicy 字段，其可能取值包括 Always
 - `Always` : 当容器终止退出后，总是重启容器（默认策略）
 - `OnFailure` : 当容器异常退出（退出状态码非 0 ）时才重启容器
 - `Never` : 当容器终止退出，从不重启容器
-只要
+
+只要 Pod 的 restartPolicy 指定的策略允许重启异常的容器，那么这个 Pod 就会保持 Running 状态并重启容器而不会进入 Faild 状态。而对于包含多个容器的 Pod 来说，只有所有的容器均进入异常状态 Pod 才会显示 Faild 状态，在此之前由 READY 字段显示正常容器个数。
+
+### Pod 字段预设
+使用 PodPreset 对象预先定义好 Pod 对象中追加的字段
+```yaml
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: allow-database
+spec:
+  selector: # 使用 selector 定义作用于指定标签 role: frontend 的 Pod 对象
+    matchLabels:
+      role: frontend
+  env:
+    - name: DB_PORT
+      value: "6379"
+  volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+  volumes:
+    - name: cache-volume
+      emptyDir: {}
+```
+定义一个带有标签 role: frontend 的 Pod 对象
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: website
+  labels:
+    app: website
+    role: frontend
+spec:
+  containers:
+    - name: website
+      image: nginx
+      ports:
+        - containerPort: 80
+```
+查看被准入控制器更改过的 Pod 规约，以了解 PodPreset 在 Pod 上执行过的操作
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: website
+  labels:
+    app: website
+    role: frontend
+  annotations:
+    podpreset.admission.kubernetes.io/podpreset-allow-database: "resource version"
+spec:
+  containers:
+    - name: website
+      image: nginx
+      volumeMounts:
+        - mountPath: /cache
+          name: cache-volume
+      ports:
+        - containerPort: 80
+      env:
+        - name: DB_PORT
+          value: "6379"
+  volumes:
+    - name: cache-volume
+      emptyDir: {}
+```
