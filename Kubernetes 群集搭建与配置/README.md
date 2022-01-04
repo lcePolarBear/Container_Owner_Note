@@ -14,7 +14,7 @@
     EOF
     sysctl --system  # 生效
     ```
-6. [安装 Docker]()
+6. [安装 Docker]() 或者[安装 Containerd]() 容器引擎
 7. 添加阿里云 YUM 软件源
     ```bash
     cat > /etc/yum.repos.d/kubernetes.repo << EOF
