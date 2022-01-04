@@ -307,3 +307,40 @@ docker run -d --runtime=runsc nginx
 docker run --runtime=runsc -it nginx dmesg
 ```
 [已经测试过的应用和工具](https://gvisor.dev/docs/user_guide/compatibility/)
+### gVisor 与 Containerd 集成
+[切换 Containerd 容器引擎]()
+
+RuntimeClass 是一个用于选择容器运行时配置的对象，容器运行时配置用
+于运行 Pod 中的容器。
+
+创建 RuntimeClass
+```yaml
+apiVersion: node.k8s.io/v1 # RuntimeClass 定义于 node.k8s.io API 组
+kind: RuntimeClass
+metadata:
+  name: gvisor # 用来引用 RuntimeClass 的名字
+handler: runsc # 对应的 CRI 配置的名称
+```
+
+创建 Pod 测试 gVisor
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-gvisor
+spec:
+  runtimeClassName: gvisor
+  containers:
+  - name: nginx
+    image: nginx
+```
+```bash
+kubectl get pod nginx-gvisor -o wide
+kubectl exec nginx-gvisor -- dmesg
+```
+
+### 案例 1
+创建一个 PSP 策略，防止创建特权 Pod，再创建一个ServiceAccount，使用 kubectl –as 验证 PSP 策略效果
+
+### 案例 2
+使用 containerd 作为容器运行时，准备好 gVisor ，创建一个 RuntimeClass ，创建一个 Pod 在 gVisor 上运行
