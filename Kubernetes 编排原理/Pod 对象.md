@@ -106,6 +106,183 @@ Pod 其实可以理解为一个虚拟机，而容器镜像可以理解为在虚�
 - Succeeded
 - Failed
 - Unknown
+### Secret [官方文档](https://kubernetes.io/zh/docs/concepts/configuration/secret/)
+1. 将数据使用 Base64 转码
+    ```bash
+    [root@jump ~]# echo -n 'admin' | base64
+    YWRtaW4=
+    [root@jump ~]# echo -n '1f2d1e2e67df' | base64
+    MWYyZDFlMmU2N2Rm
+    ```
+2. 创建 Secret 对象
+    ```yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: mysecret
+    type: Opaque
+    data:
+      username: YWRtaW4=
+      password: MWYyZDFlMmU2N2Rm
+    ```
+3. 将 Secret 对象以 Volume 方式挂载到 Pod 对象中
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: mypod
+    spec:
+      containers:
+      - name: mypod
+        image: redis
+        volumeMounts:
+        - name: foo
+          mountPath: "/etc/foo"
+          readOnly: true
+      volumes:
+      - name: foo
+        secret:
+          secretName: mysecret
+    ```
+4. 也可以通过变量的方式挂载，但是在 secret 对象内容修改后生成的变量不会修改
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: secret-demo-pod
+    spec:
+      containers:
+        - name: demo
+          image: nginx
+          env:
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: username
+            - name: PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: password
+          volumeMounts:
+          - name: config
+            mountPath: "/config"
+            readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: mysecret
+    ```
+### ConfigMap [官方文档](https://kubernetes.io/zh/docs/concepts/configuration/configmap/)
+1. 创建 ConfigMap 对象资源
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: game-demo
+    data:
+      # 类属性键；每一个键都映射到一个简单的值
+      player_initial_lives: "3"
+      ui_properties_file_name: "user-interface.properties"
+
+      # 类文件键
+      game.properties: |
+        enemy.types=aliens,monsters
+        player.maximum-lives=5    
+      user-interface.properties: |
+        color.good=purple
+        color.bad=yellow
+        allow.textmode=true
+    ```
+2. 将 ConfigMap 对象以变量方式挂载到 Pod 对象中
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: configmap-demo-pod
+    spec:
+      containers:
+        - name: demo
+          image: alpine
+          command: ["sleep", "3600"]
+          env:
+            # 定义环境变量
+            - name: PLAYER_INITIAL_LIVES # 请注意这里和 ConfigMap 中的键名是不一样的
+              valueFrom:
+                configMapKeyRef:
+                  name: game-demo           # 这个值来自 ConfigMap
+                  key: player_initial_lives # 需要取值的键
+            - name: UI_PROPERTIES_FILE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: game-demo
+                  key: ui_properties_file_name
+          volumeMounts:
+          - name: config
+            mountPath: "/config"
+            readOnly: true
+      volumes:
+        # 你可以在 Pod 级别设置卷，然后将其挂载到 Pod 内的容器中
+        - name: config
+          configMap:
+            # 提供你想要挂载的 ConfigMap 的名字
+            name: game-demo
+            # 来自 ConfigMap 的一组键，将被创建为文件
+            items:
+            - key: "game.properties"
+              path: "game.properties"
+            - key: "user-interface.properties"
+              path: "user-interface.properties"
+### Downward API [官方文档](https://kubernetes.io/zh/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/)
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubernetes-downwardapi-volume-example
+  labels:
+    zone: us-est-coast
+    cluster: test-cluster1
+    rack: rack-22
+  annotations:
+    build: two
+    builder: john-doe
+spec:
+  containers:
+    - name: client-container
+      image: k8s.gcr.io/busybox
+      command: ["sh", "-c"]
+      args:
+      - while true; do
+          if [[ -e /etc/podinfo/labels ]]; then
+            echo -en '\n\n'; cat /etc/podinfo/labels; fi;
+          if [[ -e /etc/podinfo/annotations ]]; then
+            echo -en '\n\n'; cat /etc/podinfo/annotations; fi;
+          sleep 5;
+        done;
+      volumeMounts:
+        - name: podinfo
+          mountPath: /etc/podinfo
+  volumes:
+    - name: podinfo
+      downwardAPI:
+        items:
+          - path: "labels"
+            fieldRef:
+              fieldPath: metadata.labels
+          - path: "annotations"
+            fieldRef:
+              fieldPath: metadata.annotations
+```
+- 通过这样的声明方式，当前 Pod 的 Lables 字段的值就会被 Kubernetes 自动挂载成为容器里的 /etc/podinfo/labels 文件
+- 目前， Downward API 支持的字段已经非常丰富了，详细请参考官方文档：[Downward API 的能力](https://kubernetes.io/zh/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#downward-api-%E7%9A%84%E8%83%BD%E5%8A%9B)
+- Downward API 获得的一定是用户容器启动前就确定下来的信息
+
+__Projected Volume 对象可以通过设置环境变量来获取，但是会失去自动更新的能力，一般情况下建议使用 Volume 文件挂载获取__
+
+### ServiceAccountToken 
+- Service Account 对象是 kubernetes 进行权限分配的对象，其授权信息和文件被绑定在特殊的 Secret 对象：ServiceAccountToken 中。
+- 如果任意查看一个在 kubernetes 集群中运行的 Pod，就会发现每一个 Pod 都已经自动声明了一个类型是 Secret 、名为 default-token-xxxxxx 的 Volume 自动挂载在每个容器的固定目录上。这是 kubernetes 在每个 pod 创建的时候自动在 sepc.volumes 部分添加了 ServiceAccountToken 的定义，然后自动给每个容器加上了对应的 volumeMounts 字段。
 ### 容器健康检查和恢复机制
 在 kubernetes 中，可以为 Pod 里的容器定义一个健康检查“探针”（ Probe ）。这样， kubelet 就会根据 Probe 的返回值决定这个容器的状态，而不是直接以容器是否运行（来自 Docker 返回的信息）作为依据。
 ```yaml
