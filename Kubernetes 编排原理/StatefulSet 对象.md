@@ -89,7 +89,7 @@ NAME   READY   AGE
 web    2/2     37s
 ```
 
-查看 StatefulSet 的 Event 信息
+查看 StatefulSet 的 Event 信息，可以看出 StatefulSet 资源是给 Pod 的名字进行了统一的编号
 
 ```bash
 [root@jump ~]# kubectl describe statefulset web
@@ -100,3 +100,22 @@ Events:
   Normal  SuccessfulCreate  2m46s  statefulset-controller  create Pod web-0 in StatefulSet web successful
   Normal  SuccessfulCreate  2m44s  statefulset-controller  create Pod web-1 in StatefulSet web successful
 ```
+并且，Pod 的 hostname 也以此命名规则被分配，我们可以尝试使用 DNS 方式访问 Headless Service
+
+```bash
+[root@jump ~]# kubectl run -i --tty --image busybox:1.28.0 dns-test --restart=Never --rm /bin/sh
+/ # nslookup web-0.nginx
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      web-0.nginx
+Address 1: 10.244.2.11 web-0.nginx.default.svc.cluster.local
+/ # nslookup web-1.nginx
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      web-1.nginx
+Address 1: 10.244.1.18 web-1.nginx.default.svc.cluster.local
+```
+
+mslookup 命令输出结果显示，访问 DNS 直接指向 Pod 的 IP 地址，即使将这两个 Pod 删除掉， StatefulSet 也会重新创建两个与原来相同“网络身份”的 Pod 。
