@@ -81,11 +81,35 @@ ReplicaSet 负责通过控制器模式保证系统中 Pod 的个数永远等于�
 $ kubectl scale deplyment nginx-deployment --replicas=4
 ```
 
+### 自动水平扩容
+
+Pod 必须先配置 `resource.requests` 用以限制资源分配，才能实现自动扩容
+
+```bash
+kubectl autoscale deployment web --min=3 --max=10 --cpu-percent=80
+```
+
+### 查看伸缩的状况
+
+```bash
+kubectl get hpa
+```
+
+### 使用 httpd-tools 工具进行压测，观察扩容情况
+
+```bash
+ab -n 100000 -c 1000 http://{cluster-ip}/index.html
+```
+
 ## 实现 Deployment 的滚动更新
 
 ```bash
 [root@jump ~]# kubectl create -f nginx-deployment.yaml --record
 deployment.apps/nginx-deployment created
+
+# 只更新镜像版本
+[root@jump ~]# kubectl set image deployment/nginx-deployment nginx=nginx:1.19 --record
+deployment.apps/nginx-deployment image updated
 ```
 
 ```bash
@@ -166,7 +190,43 @@ nginx-deployment-5d59d67564   0         0         0       8m19s
 nginx-deployment-69c44dfb78   3         3         3       3m9s
 ```
 
+### 限制进行滚动更新的 Pod 数量
+
+Deployment 对象有一个 `spec.revisionHistoryLimit` 字段，就是 kubernetes 为 Deployment 保留的历史版本个数，如果为 0 的话，就再也不能进行回滚操作了
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10  # RS历史版本保存数量
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%         # 滚动更新过程中最大 Pod 副本数
+      maxUnavailable: 25%   # 滚动更新过程中最大不可用 Pod 副本数
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
 ## 实现 Deployment 的回滚
+
+### 回滚上一个版本
 
 当 deployment 出现升级失败需要回滚时，可通过 kubectl rollout undo 指令将整个 deployment 回滚到上个版本
 
@@ -174,6 +234,8 @@ nginx-deployment-69c44dfb78   3         3         3       3m9s
 [root@jump ~]# kubectl rollout undo deployment/nginx-deployment
 deployment.apps/nginx-deployment rolled back
 ```
+
+### 查看历史发布版本
 
 如果需要回滚到更早的版本，先使用 kubectl rollout history 命令查看每次 deployment 变更对应的版本
 
@@ -204,11 +266,11 @@ Pod Template:
   Volumes:	<none>
 ```
 
+### 回滚历史指定版本
+
 通过在 kubectl rollout undo 命令行最后加上目标版本号，来回滚到指定版本
 
 ```bash
 [root@jump ~]# kubectl rollout undo deployment/nginx-deployment --to-revision=2
 deployment.apps/nginx-deployment rolled back
 ```
-
-Deployment 对象有一个 `spec.revisionHistoryLimit` 字段，就是 kubernetes 为 Deployment 保留的历史版本个数，如果为 0 的话，就再也不能进行回滚操作了
