@@ -215,7 +215,7 @@ spec:
         ports:
         - containerPort: 80
           name: web
-	volumeMounts:
+        volumeMounts:
         - name: www
           mountPath: /usr/share/nginx/html
   volumeClaimTemplates:
